@@ -13,13 +13,13 @@ The Dart language does not have data classes as a feature. If the user implies t
 Pseudocode:
 ```
 data class User {
-  "name": string;
-  "email": string;
-  "age": int age;
-  "role": enum(admin, sales, hr);
-  "employment_status": bool;
-  "reference_number": int;
-  "wallet_balance": double;
+  name: string;
+  email: string;
+  age: int age;
+  role: enum(admin, sales, hr);
+  employment_status: bool;
+  reference_number: int;
+  wallet_balance: double;
 }
 ```
 
@@ -75,13 +75,13 @@ If the pseudocode implies the use of a "firestore class", convert it to a final 
 Pseudocode:
 ```
 firestore class Payment {
-  "id": string;
-  "from_user": string;
-  "to_user": string;
-  "amount": double;
-  "description": string;
-  "created_at": datetime;
-  "updated_at": datetime;
+  id: string;
+  from_user: string;
+  to_user: string;
+  amount: double;
+  description: string;
+  created_at: datetime;
+  updated_at: datetime;
 }
 ```
 
