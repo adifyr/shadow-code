@@ -1,181 +1,80 @@
+// The module 'vscode' contains the VS Code extensibility API
+// Import the module and reference it with the alias vscode in your code below
+import {extname} from 'path';
 import * as vscode from 'vscode';
-import {CodeGenerator} from './code_generator';
-import {GeminiService} from './gemini_service';
-import {ShadowFileManager} from './shadow_file_manager';
+import {processPseudocode} from './gemini_service';
+import {createShadowFile} from './shadow_file_manager';
+import {createPatch} from 'diff';
 
-let geminiService: GeminiService;
-let shadowFileManager: ShadowFileManager;
-let codeGenerator: CodeGenerator;
-let changeListeners: vscode.Disposable[] = [];
+// this method is called when your extension is activated
+// your extension is activated the very first time the command is executed
+export function activate(context: vscode.ExtensionContext) {
+  console.log('Extension "Shadow Code AI" is now active.');
 
-/**
- * Extension activation
- */
-export async function activate(context: vscode.ExtensionContext) {
-	console.log('Shadow Code AI extension is now active');
+  // Register the command that initiates Shadow Mode for code file.
+  vscode.commands.registerCommand("shadowCodeAI.openInShadowMode", async (uri?: vscode.Uri) => {
+    const targetUri = uri ?? vscode.window.activeTextEditor?.document.uri;
+    if (!targetUri) {
+      vscode.window.showErrorMessage("No file selected.");
+      return;
+    }
+    await createShadowFile(targetUri);
+  });
 
-	// Initialize services
-	geminiService = new GeminiService();
-	shadowFileManager = new ShadowFileManager();
-	codeGenerator = new CodeGenerator(geminiService, shadowFileManager);
+  // Register the command that generates code from pseudocode.
+  vscode.commands.registerCommand("shadowCodeAI.generateCode", async () => {
+    await generateCode(context.extensionPath);
+  });
 
-	// Initialize Gemini with API key from settings
-	await initializeGemini();
+  // // Register the Shadow File listener.
+  // context.subscriptions.push(
+  //   vscode.workspace.onDidChangeTextDocument(async (event) => {
+  //     // Ensure the uri belongs to a Shadow File.
+  //     const shadowFileUri = event.document.uri;
+  //     if (!shadowFileUri.fsPath.endsWith(".shadow")) {
+  //       return;
+  //     }
 
-	// Register command: Open In Shadow Mode
-	const openShadowCommand = vscode.commands.registerCommand(
-		'shadow-code-ai.openInShadowMode',
-		async (uri?: vscode.Uri) => {
-			try {
-				// Get the URI from context or active editor
-				const targetUri = uri || vscode.window.activeTextEditor?.document.uri;
+  //     // Get the uri of the corresponding original file.
+  //     const originalFilePath = shadowFileUri.fsPath.replace("/.shadow/", "/").replace(".shadow", "");
+  //     const originalFileUri = vscode.Uri.file(originalFilePath);
 
-				if (!targetUri) {
-					vscode.window.showErrorMessage('No file selected');
-					return;
-				}
-
-				// Don't allow opening shadow mode for shadow files
-				if (ShadowFileManager.isShadowFile(targetUri.fsPath)) {
-					vscode.window.showWarningMessage('Cannot open shadow mode for a shadow file');
-					return;
-				}
-
-				// Create or get shadow file
-				const shadowUri = await shadowFileManager.createShadowFile(targetUri);
-
-				// Open in split view
-				await shadowFileManager.openInSplitView(targetUri, shadowUri);
-
-				// Set up change listener for this shadow file
-				setupShadowFileWatcher(shadowUri);
-
-				vscode.window.showInformationMessage(
-					'Shadow mode activated! Start writing pseudo-code.'
-				);
-			} catch (error) {
-				const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-				vscode.window.showErrorMessage(`Failed to open shadow mode: ${errorMessage}`);
-			}
-		}
-	);
-
-	// Register configuration change listener
-	const configChangeListener = vscode.workspace.onDidChangeConfiguration(async (e) => {
-		if (e.affectsConfiguration('shadowCodeAI.geminiApiKey') ||
-			e.affectsConfiguration('shadowCodeAI.modelName')) {
-			await initializeGemini();
-		}
-	});
-
-	// Register close listener to clean up
-	const closeListener = vscode.workspace.onDidCloseTextDocument((document) => {
-		if (ShadowFileManager.isShadowFile(document.uri.fsPath)) {
-			console.log('Shadow file closed:', document.uri.fsPath);
-		}
-	});
-
-	// Add to subscriptions
-	context.subscriptions.push(
-		openShadowCommand,
-		configChangeListener,
-		closeListener,
-		geminiService,
-		shadowFileManager
-	);
+  //     // Apply changes to the original file.
+  //     const edit = new vscode.WorkspaceEdit();
+  //     event.contentChanges.forEach((change) => edit.replace(originalFileUri, change.range, change.text));
+  //     await vscode.workspace.applyEdit(edit);
+  //   }),
+  // );
 }
 
-/**
- * Initialize or reinitialize Gemini service with API key from settings
- */
-async function initializeGemini(): Promise<void> {
-	const config = vscode.workspace.getConfiguration('shadowCodeAI');
-	const apiKey = config.get<string>('geminiApiKey');
-	const modelName = config.get<string>('modelName') || 'gemini-2.0-flash-lite';
+async function generateCode(extensionPath: string) {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor || !editor.document.uri.fsPath.endsWith(".shadow")) {
+    vscode.window.showWarningMessage("Please open a .shadow file first.");
+    return;
+  }
 
-	if (!apiKey) {
-		vscode.window.showWarningMessage(
-			'Shadow Code AI: Please set your Gemini API key in settings',
-			'Open Settings'
-		).then(selection => {
-			if (selection === 'Open Settings') {
-				vscode.commands.executeCommand(
-					'workbench.action.openSettings',
-					'shadowCodeAI.geminiApiKey'
-				);
-			}
-		});
-		return;
-	}
+  const shadowFileUri = editor.document.uri;
+  const originalFilePath = shadowFileUri.fsPath.replace("/.shadow/", "/").replace(".shadow", "");
+  const originalFileUri = vscode.Uri.file(originalFilePath);
+  const originalCode = (await vscode.workspace.openTextDocument(originalFileUri)).getText();
+  const pseudocode = editor.document.getText();
+  const language = extname(originalFilePath).slice(1);
 
-	try {
-		await geminiService.initialize(apiKey, modelName);
-		console.log('Gemini initialized with model:', modelName);
-	} catch (error) {
-		vscode.window.showErrorMessage(
-			`Failed to initialize Gemini: ${error}`,
-			'Check Settings'
-		).then(selection => {
-			if (selection === 'Check Settings') {
-				vscode.commands.executeCommand(
-					'workbench.action.openSettings',
-					'shadowCodeAI'
-				);
-			}
-		});
-	}
+  await vscode.window.withProgress({
+    location: vscode.ProgressLocation.Notification,
+    title: "Generating Code...",
+    cancellable: false,
+  }, async () => {
+    const generatedCode = await processPseudocode(language, pseudocode, originalCode, extensionPath);
+    if (generatedCode) {
+      const edit = new vscode.WorkspaceEdit();
+      edit.replace(originalFileUri, new vscode.Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), generatedCode);
+      await vscode.workspace.applyEdit(edit);
+      vscode.window.showInformationMessage("Code Generated Successfully ✅");
+    }
+  });
 }
 
-/**
- * Set up change watcher for shadow file with debouncing
- */
-function setupShadowFileWatcher(shadowUri: vscode.Uri): void {
-	const config = vscode.workspace.getConfiguration('shadowCodeAI');
-	const delay = config.get<number>('autoTriggerDelay') || 2000;
-
-	// Remove existing listener for this file if any
-	cleanupListenerForFile();
-
-	// Set up debounced listener
-	const listener = shadowFileManager.setupDebounce(
-		shadowUri.fsPath,
-		async () => {
-			console.log('Auto-triggering code generation for:', shadowUri.fsPath);
-
-			// Check if Gemini is initialized
-			if (!geminiService.isInitialized()) {
-				vscode.window.showWarningMessage(
-					'Shadow Code AI: Please set your Gemini API key in settings'
-				);
-				return;
-			}
-
-			// Generate and apply code
-			await codeGenerator.generateAndApply(shadowUri);
-		},
-		delay
-	);
-
-	changeListeners.push(listener);
-}
-
-/**
- * Clean up listener for a specific file
- */
-function cleanupListenerForFile(): void {
-	changeListeners = changeListeners.filter(_ => {
-		// This is a simple cleanup - in a production app, you'd want to track which listener belongs to which file
-		return true;
-	});
-}
-
-/**
- * Extension deactivation
- */
-export function deactivate() {
-	// Dispose all listeners
-	changeListeners.forEach(listener => listener.dispose());
-	changeListeners = [];
-
-	console.log('Shadow Code AI extension deactivated');
-}
+// this method is called when your extension is deactivated
+export function deactivate() { }

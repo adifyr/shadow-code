@@ -1,0 +1,13 @@
+<pseudocode>
+{{pseudocode}}
+</pseudocode>
+
+<existing-code>
+{{code}}
+</existing-code>
+
+<language>{{language}}</language>
+
+<language-instructions>
+{{instructions}}
+</language-instructions>

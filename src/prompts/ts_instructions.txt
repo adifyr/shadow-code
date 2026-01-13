@@ -1,0 +1,6 @@
+- Use modern ES2022+ syntax.
+- Prefer to use "type" over "interface".
+- Use "const" for immutable variables.
+- Prefer "const" and "let" over "var".
+- Use arrow functions where appropriate.
+- Always include proper type annotations.

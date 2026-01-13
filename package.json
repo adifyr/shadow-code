@@ -10,19 +10,47 @@
     "Programming Languages",
     "AI"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "workspaceContains:**/*.shadow"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "shadow-code-ai.openInShadowMode",
-        "title": "Open In Shadow Mode"
+        "command": "shadowCodeAI.openInShadowMode",
+        "title": "Open In Shadow Mode",
+        "icon": "$(mirror)"
+      },
+      {
+        "command": "shadowCodeAI.generateCode",
+        "title": "Generate Code",
+        "icon": "$(sparkle)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "shadowCodeAI.generateCode",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m",
+        "when": "editorTextFocus && resourceExtname == .shadow"
       }
     ],
     "menus": {
+      "editor/title": [
+        {
+          "command": "shadowCodeAI.openInShadowMode",
+          "when": "resourceScheme == file",
+          "group": "navigation"
+        },
+        {
+          "command": "shadowCodeAI.generateCode",
+          "when": "resourceExtname == .shadow",
+          "group": "navigation"
+        }
+      ],
       "editor/title/context": [
         {
-          "command": "shadow-code-ai.openInShadowMode",
+          "command": "shadowCodeAI.openInShadowMode",
           "when": "resourceScheme == file",
           "group": "navigation"
         }
@@ -38,23 +66,18 @@
           "description": "Your Google Gemini API key.",
           "order": 1
         },
-        "shadowCodeAI.autoTriggerDelay": {
-          "type": "number",
-          "title": "Auto-Trigger Delay",
-          "default": 5000,
-          "description": "Delay in milliseconds before auto-triggering AI generation.",
-          "order": 2
-        },
         "shadowCodeAI.modelName": {
           "type": "string",
           "title": "Gemini Model",
           "default": "gemini-flash-lite-latest",
           "enum": [
-            "gemini-flash-lite-latest",
-            "gemini-flash-latest"
+            "gemini-2.5-flash-lite"
+          ],
+          "enumDescriptions": [
+            "Gemini's lightest, fastest model with decent output quality."
           ],
           "description": "The Gemini model to use for code generation.",
-          "order": 3
+          "order": 2
         }
       }
     }

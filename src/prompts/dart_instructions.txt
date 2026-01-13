@@ -1,0 +1,6 @@
+- Use the latest appropriate Dart syntax and conventions.
+- Use "const" for fields and constructors where appropriate.
+- Use "final" for immutable fields.
+- Include the appropriate imports.
+- If the pseudocode implies the use of Flutter, follow proper StatefulWidget/StatelessWidget structure and patterns.
+- If the pseudocode implies the use of Riverpod, follow proper ConsumerWidget/ConsumerStatefulWidget structure and patterns.
