@@ -48,6 +48,5 @@ function buildUserPrompt(language: string, pseudocode: string, code: string, ext
     .replace("{{pseudocode}}", pseudocode)
     .replace("{{code}}", code)
     .replace("{{instructions}}", instructions);
-  console.log("Complete User Prompt:\n\n", userPrompt);
   return userPrompt;
 }
