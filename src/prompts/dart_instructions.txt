@@ -16,6 +16,7 @@ data class User {
   "name": string;
   "email": string;
   "age": int age;
+  "role": enum(admin, sales, hr);
   "employment_status": bool;
   "reference_number": int;
   "wallet_balance": double;
@@ -27,6 +28,7 @@ Output Code:
 final class User {
   final String name, email;
   final int age, referenceNumber;
+  final UserRole role;
   final bool employmentStatus;
   final double walletBalance;
 
@@ -34,6 +36,7 @@ final class User {
     required this.name,
     required this.email,
     required this.age,
+    required this.role,
     required this.employmentStatus,
     required this.referenceNumber;
     required this.walletBalance;
@@ -44,6 +47,7 @@ final class User {
       name: json['name'] as String,
       email: json['email'] as String,
       age: (json['age'] as num).toInt(),
+      role: UserRole.values.byName(json['role'] as String),
       employmentStatus: json['employment_status'] as String,
       referenceNumber: (json['reference_number'] as num).toInt(),
       walletBalance: (json['wallet_balance'] as num).toDouble(),
@@ -55,6 +59,7 @@ final class User {
       'name': name,
       'email': email,
       'age': age,
+      'role': role.name,
       'employment_status': employmentStatus,
       'reference_number': referenceNumber,
       'wallet_balance': walletBalance,
