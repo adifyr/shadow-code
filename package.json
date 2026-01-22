@@ -25,6 +25,11 @@
         "command": "shadowCodeAI.generateCode",
         "title": "Generate Code",
         "icon": "$(sparkle)"
+      },
+      {
+        "command": "shadowCodeAI.copyCode",
+        "title": "Copy Over Existing Code",
+        "icon": "$(copy)"
       }
     ],
     "keybindings": [
@@ -39,11 +44,16 @@
       "editor/title": [
         {
           "command": "shadowCodeAI.openInShadowMode",
-          "when": "resourceScheme == file",
+          "when": "resourceScheme == file && resourceExtname != .shadow",
           "group": "navigation"
         },
         {
           "command": "shadowCodeAI.generateCode",
+          "when": "resourceExtname == .shadow",
+          "group": "navigation"
+        },
+        {
+          "command": "shadowCodeAI.copyCode",
           "when": "resourceExtname == .shadow",
           "group": "navigation"
         }
@@ -51,7 +61,7 @@
       "editor/title/context": [
         {
           "command": "shadowCodeAI.openInShadowMode",
-          "when": "resourceScheme == file",
+          "when": "resourceScheme == file && resourceExtname != .shadow",
           "group": "navigation"
         }
       ]

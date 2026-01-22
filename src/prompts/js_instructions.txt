@@ -1,5 +1,0 @@
-- Use modern Javascript (ES2022+).
-- Use "const" for immutable variables.
-- Prefer "const" and "let" over "var".
-- Use arrow functions where appropriate.
-- Follow clean code principles.
