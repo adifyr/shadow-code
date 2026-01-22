@@ -11,19 +11,16 @@ type ShadowFileState = {
 };
 
 const active_shadow_files = new Map<string, ShadowFileState>();
-const GEN_INTERVAL = 5000;
+const GEN_INTERVAL = 4000;
 
 export function start_realtime_generation(
   shadow_file_uri: Uri,
   original_file_uri: Uri,
-  language: string,
   gemini_service: GeminiService,
+  language: string,
 ) {
   const key = shadow_file_uri.fsPath;
-  if (active_shadow_files.has(key)) {
-    return;
-  }
-
+  if (active_shadow_files.has(key)) {return;}
   const state: ShadowFileState = {
     shadow_file_uri,
     original_file_uri,
@@ -33,6 +30,7 @@ export function start_realtime_generation(
     is_generating: false,
   };
   active_shadow_files.set(key, state);
+  console.log(`Active Shadow Files Being Listened To: ${active_shadow_files.keys.length}`);
   schedule_next_generation(state, gemini_service);
 }
 
@@ -44,17 +42,14 @@ function schedule_next_generation(state: ShadowFileState, gemini_service: Gemini
 }
 
 async function process_generation(state: ShadowFileState, gemini_service: GeminiService) {
-  if (state.is_generating) {
-    return; // Already generating code.
-  }
+  if (state.is_generating) {return;}
 
   const shadow_doc = await workspace.openTextDocument(state.shadow_file_uri);
   const shadow_code = shadow_doc.getText();
-  if (shadow_code === state.last_processed_content) {
-    return; // No changes made.
-  }
+  if (shadow_code === state.last_processed_content) {return;}
 
-  // Mark as generating code.
+  console.log("Detected change in shadow file. Generating code..");
+
   state.is_generating = true;
   try {
     const original_doc = await workspace.openTextDocument(state.original_file_uri);
@@ -81,4 +76,5 @@ export function stop_realtime_generation(shadow_file_uri: Uri) {
     clearTimeout(state.timer_id);
   }
   active_shadow_files.delete(key);
+  console.log(`Active Shadow Files Being Listened To: ${active_shadow_files.keys.length}`);
 }
