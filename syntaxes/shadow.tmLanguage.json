@@ -1,0 +1,36 @@
+{
+  "scopeName": "source.shadow",
+  "patterns": [
+    {
+      "name": "meta.function-call.shadow",
+      "begin": "\\b(use)\\s*(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "support.function.shadow"
+        },
+        "2": {
+          "name": "punctuation.definition.parameters.begin.shadow"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.parameters.end.shadow"
+        }
+      },
+      "patterns": [
+        {
+          "name": "string.quoted.double.shadow",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.shadow",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

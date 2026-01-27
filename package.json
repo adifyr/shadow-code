@@ -22,22 +22,25 @@
         "icon": "$(mirror)"
       },
       {
-        "command": "shadowCodeAI.generateCode",
-        "title": "Generate Code",
-        "icon": "$(sparkle)"
-      },
-      {
         "command": "shadowCodeAI.copyCode",
         "title": "Copy Over Existing Code",
         "icon": "$(copy)"
       }
     ],
-    "keybindings": [
+    "languages": [
       {
-        "command": "shadowCodeAI.generateCode",
-        "key": "ctrl+shift+m",
-        "mac": "cmd+shift+m",
-        "when": "editorTextFocus && resourceExtname == .shadow"
+        "id": "shadow",
+        "extensions": [
+          ".shadow"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "shadow",
+        "scopeName": "source.shadow",
+        "path": "./syntaxes/shadow.tmLanguage.json"
       }
     ],
     "menus": {
@@ -45,11 +48,6 @@
         {
           "command": "shadowCodeAI.openInShadowMode",
           "when": "resourceScheme == file && resourceExtname != .shadow",
-          "group": "navigation"
-        },
-        {
-          "command": "shadowCodeAI.generateCode",
-          "when": "resourceExtname == .shadow",
           "group": "navigation"
         },
         {
@@ -69,24 +67,24 @@
     "configuration": {
       "title": "Shadow Code AI",
       "properties": {
-        "shadowCodeAI.geminiApiKey": {
+        "shadowCodeAI.apiKey": {
           "type": "string",
-          "title": "Gemini API Key",
-          "default": "",
-          "description": "Your Google Gemini API key.",
+          "title": "OpenRouter API Key",
+          "default": "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",
+          "description": "Your OpenRouter API key.",
           "order": 1
         },
-        "shadowCodeAI.modelName": {
+        "shadowCodeAI.model": {
           "type": "string",
-          "title": "Gemini Model",
-          "default": "gemini-flash-lite-latest",
+          "title": "AI Model",
+          "default": "openai/gpt-oss-120b:free",
           "enum": [
-            "gemini-2.5-flash-lite"
+            "openai/gpt-oss-120b:free"
           ],
           "enumDescriptions": [
-            "Gemini's lightest, fastest model with decent output quality."
+            "An open-weight, 117B-parameter Mixture-of-Experts (MoE) language model from OpenAI designed for high-reasoning, agentic, and general-purpose production use cases."
           ],
-          "description": "The Gemini model to use for code generation.",
+          "description": "The AI model to use for code generation.",
           "order": 2
         }
       }
@@ -119,6 +117,7 @@
     "typescript-eslint": "^8.48.1"
   },
   "dependencies": {
-    "@google/genai": "^1.35.0"
+    "@google/genai": "^1.35.0",
+    "@openrouter/sdk": "^0.4.0"
   }
 }
