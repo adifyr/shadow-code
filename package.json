@@ -25,11 +25,19 @@
         "command": "shadowCodeAI.copyCode",
         "title": "Copy Over Existing Code",
         "icon": "$(copy)"
+      },
+      {
+        "command": "shadowCodeAI.generateCode",
+        "title": "Generate Code",
+        "icon": "$(sparkle)"
       }
     ],
     "languages": [
       {
         "id": "shadow",
+        "aliases": [
+          "Shadow"
+        ],
         "extensions": [
           ".shadow"
         ],
@@ -43,6 +51,14 @@
         "path": "./syntaxes/shadow.tmLanguage.json"
       }
     ],
+    "keybindings": [
+      {
+        "command": "shadowCodeAI.generateCode",
+        "key": "ctrl+alt+enter",
+        "mac": "cmd+alt+enter",
+        "when": "resourceExtname == .shadow || editorLangId == shadow"
+      }
+    ],
     "menus": {
       "editor/title": [
         {
@@ -52,6 +68,11 @@
         },
         {
           "command": "shadowCodeAI.copyCode",
+          "when": "resourceExtname == .shadow",
+          "group": "navigation"
+        },
+        {
+          "command": "shadowCodeAI.generateCode",
           "when": "resourceExtname == .shadow",
           "group": "navigation"
         }
@@ -77,13 +98,7 @@
         "shadowCodeAI.model": {
           "type": "string",
           "title": "AI Model",
-          "default": "openai/gpt-oss-120b:free",
-          "enum": [
-            "openai/gpt-oss-120b:free"
-          ],
-          "enumDescriptions": [
-            "An open-weight, 117B-parameter Mixture-of-Experts (MoE) language model from OpenAI designed for high-reasoning, agentic, and general-purpose production use cases."
-          ],
+          "default": "google/gemini-2.5-flash-lite",
           "description": "The AI model to use for code generation.",
           "order": 2
         }
@@ -118,6 +133,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.35.0",
-    "@openrouter/sdk": "^0.4.0"
+    "@openrouter/sdk": "^0.4.0",
+    "diff": "^8.0.3"
   }
 }

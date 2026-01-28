@@ -1,5 +1,5 @@
 # Psuedocode
-```
+```diff
 {{pseudocode}}
 ```
 
