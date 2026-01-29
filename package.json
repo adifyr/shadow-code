@@ -2,7 +2,7 @@
   "name": "shadow-code-ai",
   "displayName": "shadow-code-ai",
   "description": "AI-powered pseudo-code to code conversion engine.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.108.0"
   },
@@ -15,11 +15,20 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "icons": {
+      "shadow-mode": {
+        "description": "Main Icon for enabling Shadow Mode.",
+        "default": {
+          "fontPath": "assets/shadow-icon.woff",
+          "fontCharacter": "\\f000"
+        }
+      }
+    },
     "commands": [
       {
         "command": "shadowCodeAI.openInShadowMode",
         "title": "Open In Shadow Mode",
-        "icon": "$(mirror)"
+        "icon": "$(shadow-mode)"
       },
       {
         "command": "shadowCodeAI.copyCode",
