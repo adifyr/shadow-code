@@ -25,8 +25,9 @@ export class ShadowCodeService {
     originalFileUri: Uri,
     diff: string,
   ): Promise<string | undefined> {
-    const systemPrompt = readFileSync(join(this.extensionPath, `assets/prompts/${langExtName}/system_prompt.md`), "utf-8")
-      .replaceAll("{{language}}", langExtName);
+    const systemPrompt = readFileSync(
+      join(this.extensionPath, `assets/prompts/${langExtName}/system_prompt.md`), "utf-8"
+    ).replaceAll("{{language}}", langExtName);
     const workspaceUri = workspace.getWorkspaceFolder(originalFileUri)!.uri;
     const context = await this.extractContext(pseudocode, workspaceUri);
     let userPrompt = readFileSync(join(this.extensionPath, `assets/prompts/${langExtName}/user_prompt.md`), "utf-8")
@@ -40,15 +41,16 @@ export class ShadowCodeService {
       const pubspec = pubspecUris.length > 0 ? textDecoder.decode(await workspace.fs.readFile(pubspecUris[0])) : "";
       userPrompt = userPrompt.replace("{{pubspec}}", pubspec);
     } else if (langExtName === "ts") {
-      const packageJsonUris = await workspace.findFiles("package.json", "**/node_modules/**");
+      const packageJsonUris = await workspace.findFiles("**/package.json", "**/node_modules/**");
+      Logger.info("Found URIs for package.json:\n" + packageJsonUris.map((uri) => uri.toString()).toString());
       const packageJson = packageJsonUris.length > 0 ?
         textDecoder.decode(await workspace.fs.readFile(packageJsonUris[0])) :
         "";
-      const tsconfigUris = await workspace.findFiles("tsconfig.json", "**/node_modules/**");
+      const tsconfigUris = await workspace.findFiles("**/tsconfig.json", "**/node_modules/**");
       const tsconfig = tsconfigUris.length > 0 ? textDecoder.decode(await workspace.fs.readFile(tsconfigUris[0])) : "";
       userPrompt = userPrompt.replace("{{package_json}}", packageJson).replace("{{tsconfig}}", tsconfig);
     } else if (langExtName === "js") {
-      const packageJsonUris = await workspace.findFiles("package.json", "**/node_modules/**");
+      const packageJsonUris = await workspace.findFiles("**/package.json", "**/node_modules/**");
       const packageJson = packageJsonUris.length > 0 ?
         textDecoder.decode(await workspace.fs.readFile(packageJsonUris[0])) :
         "";

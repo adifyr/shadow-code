@@ -3,6 +3,12 @@
   "displayName": "Shadow Code AI",
   "description": "A novel approach to coding with AI.",
   "version": "0.1.6",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Shadow Code AI requires a trusted workspace to function."
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/adifyr/shadow-code-ai.git"
