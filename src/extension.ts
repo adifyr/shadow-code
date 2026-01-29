@@ -14,7 +14,9 @@ export function activate(context: ExtensionContext) {
 
   // Register Commands.
   context.subscriptions.push(commands.registerCommand("shadowCodeAI.openInShadowMode", openShadowFile));
-  context.subscriptions.push(commands.registerCommand("shadowCodeAI.copyCode", copyCode));
+  context.subscriptions.push(commands.registerCommand("shadowCodeAI.copyCode", async (uri: Uri) => {
+    await copyCode(uri, context);
+  }));
   context.subscriptions.push(commands.registerCommand("shadowCodeAI.generateCode", () => {
     window.withProgress({location: ProgressLocation.Window, title: "Shadow Code AI"}, async (progress) => {
       progress.report({message: "Converting Shadow Code"});
@@ -69,7 +71,7 @@ async function openShadowFile(uri: Uri) {
   window.showTextDocument(doc, {viewColumn: ViewColumn.Beside});
 }
 
-async function copyCode(uri: Uri) {
+async function copyCode(uri: Uri, context: ExtensionContext) {
   if (!uri.fsPath.endsWith(".shadow")) {
     window.showErrorMessage("Error: Document is not a '.shadow' file.");
     return;
@@ -79,6 +81,7 @@ async function copyCode(uri: Uri) {
   const edit = new WorkspaceEdit();
   edit.replace(uri, new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), originalFileCode);
   await workspace.applyEdit(edit);
+  context.workspaceState.update(`shadow_checkpoint_${uri.toString()}`, originalFileCode);
 }
 
 async function convertShadowCode(service: ShadowCodeService, context: ExtensionContext, doc?: TextDocument) {
