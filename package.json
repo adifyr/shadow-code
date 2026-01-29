@@ -2,7 +2,7 @@
   "name": "shadow-code-ai",
   "displayName": "Shadow Code AI",
   "description": "A novel approach to coding with AI.",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
@@ -109,15 +109,19 @@
       "properties": {
         "shadowCodeAI.apiKey": {
           "type": "string",
-          "title": "OpenRouter API Key",
-          "default": "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",
-          "description": "Your OpenRouter API key.",
+          "title": "Gemini API Key",
+          "default": "REMOVED",
+          "description": "Your Gemini API key.",
           "order": 1
         },
         "shadowCodeAI.model": {
           "type": "string",
           "title": "AI Model",
-          "default": "google/gemini-2.5-flash-lite",
+          "default": "gemini-flash-lite-latest",
+          "enum": [
+            "gemini-flash-lite-latest",
+            "gemini-flash-latest"
+          ],
           "description": "The AI model to use for code generation.",
           "order": 2
         }
@@ -151,7 +155,7 @@
     "typescript-eslint": "^8.48.1"
   },
   "dependencies": {
-    "@google/genai": "^1.35.0",
+    "@google/genai": "^1.38.0",
     "@openrouter/sdk": "^0.4.0",
     "diff": "^8.0.3"
   }

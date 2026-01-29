@@ -1,4 +1,4 @@
-import {OpenRouter} from "@openrouter/sdk";
+import {GoogleGenAI} from "@google/genai";
 import {readFileSync} from "fs";
 import {join} from "path";
 import {TextDecoder} from "util";
@@ -6,16 +6,19 @@ import {Uri, window, workspace} from "vscode";
 import {Logger} from "./logger";
 
 export class ShadowCodeService {
-  constructor(private extensionPath: string, private model: string, private client: OpenRouter) { }
+  constructor(private extensionPath: string, private model: string, private client: GoogleGenAI) {
+    Logger.info("Model Name: " + model);
+  }
 
   static initialize(extPath: string): ShadowCodeService | undefined {
     const config = workspace.getConfiguration("shadowCodeAI");
     const apiKey = config.get<string>("apiKey");
-    if (!apiKey) {
+    if (!apiKey || apiKey.length === 0) {
       window.showErrorMessage("Error: Your OpenRouter API Key is not configured.");
       return;
     }
-    return new ShadowCodeService(extPath, config.get<string>("model")!, new OpenRouter({apiKey}));
+    Logger.info(`API Key: ${apiKey}`);
+    return new ShadowCodeService(extPath, config.get<string>("model")!, new GoogleGenAI({apiKey}));
   }
 
   async generateCode(
@@ -57,22 +60,17 @@ export class ShadowCodeService {
       userPrompt = userPrompt.replace("{{package_json}}", packageJson);
     }
     Logger.info(`User Prompt:\n${userPrompt}`);
-    try {
-      const result = this.client.callModel({
-        model: this.model,
-        instructions: systemPrompt,
-        input: userPrompt,
-        reasoning: {enabled: false},
-      });
-      const resultState = await result.getState();
-      Logger.info(`AI Result Status:\n${resultState.status}`);
-      const response = (await result.getText()).replace(/```[\w]*\n/g, '').replace(/```/g, '').trim();
-      Logger.info(`AI Response:\n${response}`);
-      return response;
-    } catch (error) {
-      Logger.error("Error generating response", error);
-      return "";
-    }
+    const result = await this.client.models.generateContent({
+      model: this.model,
+      contents: userPrompt,
+      config: {
+        systemInstruction: systemPrompt,
+        thinkingConfig: {thinkingBudget: 0}
+      }
+    });
+    const response = result.text?.replace(/```[\w]*\n/g, '').replace(/```/g, '').trim();
+    Logger.info(`AI Response:\n${response}`);
+    return response;
   }
 
   private async extractContext(pseudocode: string, workspaceUri: Uri): Promise<string> {
