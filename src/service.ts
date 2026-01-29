@@ -24,11 +24,11 @@ export class ShadowCodeService {
     originalFileUri: Uri,
     diff: string,
   ): Promise<string | undefined> {
-    const systemPrompt = readFileSync(join(this.extensionPath, `src/prompts/${langExtName}/system_prompt.md`), "utf-8")
+    const systemPrompt = readFileSync(join(this.extensionPath, `assets/prompts/${langExtName}/system_prompt.md`), "utf-8")
       .replaceAll("{{language}}", langExtName);
     const workspaceUri = workspace.getWorkspaceFolder(originalFileUri)!.uri;
     const context = await this.extractContext(pseudocode, workspaceUri);
-    let userPrompt = readFileSync(join(this.extensionPath, `src/prompts/${langExtName}/user_prompt.md`), "utf-8")
+    let userPrompt = readFileSync(join(this.extensionPath, `assets/prompts/${langExtName}/user_prompt.md`), "utf-8")
       .replace("{{pseudocode}}", diff)
       .replace("{{existing_code}}", existingCode)
       .replace("{{context}}", context)
