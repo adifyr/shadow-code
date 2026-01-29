@@ -1,7 +1,7 @@
 import {diffLines} from "diff";
 import {existsSync, mkdirSync, writeFileSync} from "fs";
-import {basename, dirname, extname, join} from "path";
-import {commands, CompletionItem, CompletionItemKind, ExtensionContext, languages, MarkdownString, Position, ProgressLocation, Range, SnippetString, TextDocument, Uri, ViewColumn, window, workspace, WorkspaceEdit} from "vscode";
+import {basename, dirname, extname, join, sep} from "path";
+import {commands, CompletionItem, CompletionItemKind, Extension, ExtensionContext, languages, MarkdownString, Position, ProgressLocation, Range, SnippetString, TextDocument, Uri, ViewColumn, window, workspace, WorkspaceEdit} from "vscode";
 import {ShadowCodeService} from "./service";
 
 export function activate(context: ExtensionContext) {
@@ -13,7 +13,9 @@ export function activate(context: ExtensionContext) {
   cleanupGhostCheckpoints(context);
 
   // Register Commands.
-  context.subscriptions.push(commands.registerCommand("shadowCodeAI.openInShadowMode", openShadowFile));
+  context.subscriptions.push(commands.registerCommand("shadowCodeAI.openInShadowMode", async (uri: Uri) => {
+    await openShadowFile(uri, context);
+  }));
   context.subscriptions.push(commands.registerCommand("shadowCodeAI.copyCode", async (uri: Uri) => {
     await copyCode(uri, context);
   }));
@@ -33,7 +35,7 @@ export function activate(context: ExtensionContext) {
       if (!/use\([^)]*$/.test(textBeforeCursor) || quoteCount % 2 === 0) {
         return;
       }
-      const extName = extname(document.uri.fsPath.replace("/.shadows/", "/").replace(".shadow", "")).slice(1);
+      const extName = extname(document.uri.fsPath.replace(/\.shadow$/, "")).slice(1);
       const files = await workspace.findFiles({dart: "lib/**/*", js: "src/**/*", ts: "src/**/*"}[extName] ?? "**/*");
       const completionItems = files.map((file_uri) => {
         const relativePath = workspace.asRelativePath(file_uri);
@@ -55,7 +57,7 @@ export function activate(context: ExtensionContext) {
   }));
 }
 
-async function openShadowFile(uri: Uri) {
+async function openShadowFile(uri: Uri, context: ExtensionContext) {
   const workspaceFolder = workspace.getWorkspaceFolder(uri);
   if (!workspaceFolder) {
     window.showErrorMessage("Cannot enable Shadow Mode for a file that isn't inside a workspace folder.");
@@ -65,7 +67,9 @@ async function openShadowFile(uri: Uri) {
   const shadowFilePath = join(shadowDir, basename(uri.fsPath) + ".shadow");
   mkdirSync(shadowDir, {recursive: true});
   if (!existsSync(shadowFilePath)) {
-    writeFileSync(shadowFilePath, '');
+    const originalFileCode = (await workspace.openTextDocument(uri)).getText();
+    writeFileSync(shadowFilePath, originalFileCode);
+    context.workspaceState.update(`shadow_checkpoint_${Uri.file(shadowFilePath)}`, originalFileCode);
   }
   const doc = await workspace.openTextDocument(shadowFilePath);
   window.showTextDocument(doc, {viewColumn: ViewColumn.Beside});
@@ -76,7 +80,7 @@ async function copyCode(uri: Uri, context: ExtensionContext) {
     window.showErrorMessage("Error: Document is not a '.shadow' file.");
     return;
   }
-  const originalFileUri = Uri.file(uri.fsPath.replaceAll("/.shadows/", "/").replaceAll(".shadow", ""));
+  const originalFileUri = Uri.file(uri.fsPath.replace(/[\\/]\.shadows[\\/]/, sep).replace(/\.shadow$/, ""));
   const originalFileCode = new TextDecoder().decode(await workspace.fs.readFile(originalFileUri));
   const edit = new WorkspaceEdit();
   edit.replace(uri, new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), originalFileCode);
@@ -95,7 +99,7 @@ async function convertShadowCode(service: ShadowCodeService, context: ExtensionC
   }
   const pseudocode = doc.getText();
   const diff = buildDiff(context.workspaceState.get<string>(`shadow_checkpoint_${doc.uri.toString()}`), pseudocode);
-  const originalFileUri = Uri.file(doc.uri.fsPath.replace("/.shadows/", "/").replace(".shadow", ""));
+  const originalFileUri = Uri.file(doc.uri.fsPath.replace(/[\\/]\.shadows[\\/]/, sep).replace(/\.shadow$/, ""));
   const originalFileCode = (await workspace.openTextDocument(originalFileUri)).getText();
   const langExtName = extname(originalFileUri.fsPath).slice(1);
   const output = await service.generateCode(langExtName, pseudocode, originalFileCode, originalFileUri, diff);
