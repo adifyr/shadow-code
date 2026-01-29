@@ -44,9 +44,7 @@ export class ShadowCodeService {
         textDecoder.decode(await workspace.fs.readFile(packageJsonUris[0])) :
         "";
       const tsconfigUris = await workspace.findFiles("tsconfig.json", "**/node_modules/**");
-      const tsconfig = tsconfigUris.length > 0 ?
-        textDecoder.decode(await workspace.fs.readFile(packageJsonUris[0])) :
-        "";
+      const tsconfig = tsconfigUris.length > 0 ? textDecoder.decode(await workspace.fs.readFile(tsconfigUris[0])) : "";
       userPrompt = userPrompt.replace("{{package_json}}", packageJson).replace("{{tsconfig}}", tsconfig);
     } else if (langExtName === "js") {
       const packageJsonUris = await workspace.findFiles("package.json", "**/node_modules/**");
