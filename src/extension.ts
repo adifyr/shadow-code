@@ -76,7 +76,8 @@ async function copyCode(uri: Uri, context: ExtensionContext) {
     window.showErrorMessage("Error: Document is not a '.shadow' file.");
     return;
   }
-  const originalFileUri = Uri.file(uri.fsPath.replace("/.shadow/", "/").replace(".shadow", ""));
+  const originalFilePath = uri.fsPath.replace("/.shadow/", "/").replace(".shadow", "");
+  const originalFileUri = Uri.file(originalFilePath);
   const originalFileCode = new TextDecoder().decode(await workspace.fs.readFile(originalFileUri));
   const edit = new WorkspaceEdit();
   edit.replace(uri, new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), originalFileCode);
