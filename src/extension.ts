@@ -69,7 +69,7 @@ async function openShadowFile(uri: Uri, context: ExtensionContext) {
   if (!existsSync(shadowFilePath)) {
     const originalFileCode = (await workspace.openTextDocument(uri)).getText();
     writeFileSync(shadowFilePath, originalFileCode);
-    context.workspaceState.update(`shadow_checkpoint_${Uri.file(shadowFilePath)}`, originalFileCode);
+    await context.workspaceState.update(`shadow_checkpoint_${Uri.file(shadowFilePath)}`, originalFileCode);
   }
   const doc = await workspace.openTextDocument(shadowFilePath);
   window.showTextDocument(doc, {viewColumn: ViewColumn.Beside});
@@ -85,7 +85,7 @@ async function copyCode(uri: Uri, context: ExtensionContext) {
   const edit = new WorkspaceEdit();
   edit.replace(uri, new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), originalFileCode);
   await workspace.applyEdit(edit);
-  context.workspaceState.update(`shadow_checkpoint_${uri.toString()}`, originalFileCode);
+  await context.workspaceState.update(`shadow_checkpoint_${uri.toString()}`, originalFileCode);
 }
 
 async function convertShadowCode(service: ShadowCodeService, context: ExtensionContext, doc?: TextDocument) {

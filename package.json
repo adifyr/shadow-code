@@ -2,7 +2,7 @@
   "name": "shadow-code-ai",
   "displayName": "Shadow Code AI",
   "description": "A novel approach to coding with AI.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/adifyr/shadow-code-ai.git"

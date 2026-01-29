@@ -35,21 +35,26 @@ export class ShadowCodeService {
       .replaceAll("{{language}}", langExtName);
     const textDecoder = new TextDecoder();
     if (langExtName === "dart") {
-      const pubspecFile = await workspace.fs.readFile(Uri.joinPath(workspaceUri, "pubspec.yaml"));
-      const pubspec = textDecoder.decode(pubspecFile);
+      const pubspecUris = await workspace.findFiles("pubspec.yaml");
+      const pubspec = pubspecUris.length > 0 ? textDecoder.decode(await workspace.fs.readFile(pubspecUris[0])) : "";
       userPrompt = userPrompt.replace("{{pubspec}}", pubspec);
     } else if (langExtName === "ts") {
-      const packageJsonFile = await workspace.fs.readFile(Uri.joinPath(workspaceUri, "package.json"));
-      const tsconfigFile = await workspace.fs.readFile(Uri.joinPath(workspaceUri, "tsconfig.json"));
-      const packageJson = textDecoder.decode(packageJsonFile);
-      const tsconfig = textDecoder.decode(tsconfigFile);
+      const packageJsonUris = await workspace.findFiles("package.json", "**/node_modules/**");
+      const packageJson = packageJsonUris.length > 0 ?
+        textDecoder.decode(await workspace.fs.readFile(packageJsonUris[0])) :
+        "";
+      const tsconfigUris = await workspace.findFiles("tsconfig.json", "**/node_modules/**");
+      const tsconfig = tsconfigUris.length > 0 ?
+        textDecoder.decode(await workspace.fs.readFile(packageJsonUris[0])) :
+        "";
       userPrompt = userPrompt.replace("{{package_json}}", packageJson).replace("{{tsconfig}}", tsconfig);
     } else if (langExtName === "js") {
-      const packageJsonFile = await workspace.fs.readFile(Uri.joinPath(workspaceUri, "package.json"));
-      const packageJson = textDecoder.decode(packageJsonFile);
+      const packageJsonUris = await workspace.findFiles("package.json", "**/node_modules/**");
+      const packageJson = packageJsonUris.length > 0 ?
+        textDecoder.decode(await workspace.fs.readFile(packageJsonUris[0])) :
+        "";
       userPrompt = userPrompt.replace("{{package_json}}", packageJson);
     }
-    console.log(`User Prompt:\n\n${userPrompt}`);
     const result = this.client.callModel({
       model: this.model,
       instructions: systemPrompt,
