@@ -3,6 +3,7 @@ import {readFileSync} from "fs";
 import {join} from "path";
 import {TextDecoder} from "util";
 import {Uri, window, workspace} from "vscode";
+import {Logger} from "./logger";
 
 export class ShadowCodeService {
   constructor(private extensionPath: string, private model: string, private client: OpenRouter) { }
@@ -53,14 +54,23 @@ export class ShadowCodeService {
         "";
       userPrompt = userPrompt.replace("{{package_json}}", packageJson);
     }
-    const result = this.client.callModel({
-      model: this.model,
-      instructions: systemPrompt,
-      input: userPrompt,
-      reasoning: {enabled: false},
-    });
-    const response = (await result.getText()).replace(/```[\w]*\n/g, '').replace(/```/g, '').trim();
-    return response;
+    Logger.info(`User Prompt:\n${userPrompt}`);
+    try {
+      const result = this.client.callModel({
+        model: this.model,
+        instructions: systemPrompt,
+        input: userPrompt,
+        reasoning: {enabled: false},
+      });
+      const resultState = await result.getState();
+      Logger.info(`AI Result Status:\n${resultState.status}`);
+      const response = (await result.getText()).replace(/```[\w]*\n/g, '').replace(/```/g, '').trim();
+      Logger.info(`AI Response:\n${response}`);
+      return response;
+    } catch (error) {
+      Logger.error("Error generating response", error);
+      return "";
+    }
   }
 
   private async extractContext(pseudocode: string, workspaceUri: Uri): Promise<string> {
