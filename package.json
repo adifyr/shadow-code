@@ -1,7 +1,7 @@
 {
   "name": "shadow-code-ai",
-  "displayName": "shadow-code-ai",
-  "description": "AI-powered pseudo-code to code conversion engine.",
+  "displayName": "Shadow Code AI",
+  "description": "A novel approach to coding with AI.",
   "version": "0.1.0",
   "engines": {
     "vscode": "^1.108.0"

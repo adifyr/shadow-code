@@ -32,8 +32,8 @@ Install Shadow Code AI from the VSCode Marketplace.
 
 ## Usage Example
 
-**Write this pseudo-code:**
-```dart
+**Write this pseudocode:**
+```
 stateless widget UserCard { UserCard(string name, string email)
 
 build { Card( child: Column([ Text(name, size: 18, weight: bold), Text(email, color: gray), ]) ) } }
