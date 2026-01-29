@@ -33,7 +33,7 @@ export function activate(context: ExtensionContext) {
       if (!/use\([^)]*$/.test(textBeforeCursor) || quoteCount % 2 === 0) {
         return;
       }
-      const extName = extname(document.uri.fsPath.replace("/.shadow/", "/").replace(".shadow", "")).slice(1);
+      const extName = extname(document.uri.fsPath.replace("/.shadows/", "/").replace(".shadow", "")).slice(1);
       const files = await workspace.findFiles({dart: "lib/**/*", js: "src/**/*", ts: "src/**/*"}[extName] ?? "**/*");
       const completionItems = files.map((file_uri) => {
         const relativePath = workspace.asRelativePath(file_uri);
@@ -61,7 +61,7 @@ async function openShadowFile(uri: Uri) {
     window.showErrorMessage("Cannot enable Shadow Mode for a file that isn't inside a workspace folder.");
     return;
   }
-  const shadowDir = join(workspaceFolder.uri.fsPath, ".shadow", dirname(workspace.asRelativePath(uri)));
+  const shadowDir = join(workspaceFolder.uri.fsPath, ".shadows", dirname(workspace.asRelativePath(uri)));
   const shadowFilePath = join(shadowDir, basename(uri.fsPath) + ".shadow");
   mkdirSync(shadowDir, {recursive: true});
   if (!existsSync(shadowFilePath)) {
@@ -76,8 +76,7 @@ async function copyCode(uri: Uri, context: ExtensionContext) {
     window.showErrorMessage("Error: Document is not a '.shadow' file.");
     return;
   }
-  const originalFilePath = uri.fsPath.replace("/.shadow/", "/").replace(".shadow", "");
-  const originalFileUri = Uri.file(originalFilePath);
+  const originalFileUri = Uri.file(uri.fsPath.replaceAll("/.shadows/", "/").replaceAll(".shadow", ""));
   const originalFileCode = new TextDecoder().decode(await workspace.fs.readFile(originalFileUri));
   const edit = new WorkspaceEdit();
   edit.replace(uri, new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), originalFileCode);
@@ -96,7 +95,7 @@ async function convertShadowCode(service: ShadowCodeService, context: ExtensionC
   }
   const pseudocode = doc.getText();
   const diff = buildDiff(context.workspaceState.get<string>(`shadow_checkpoint_${doc.uri.toString()}`), pseudocode);
-  const originalFileUri = Uri.file(doc.uri.fsPath.replace("/.shadow/", "/").replace(".shadow", ""));
+  const originalFileUri = Uri.file(doc.uri.fsPath.replace("/.shadows/", "/").replace(".shadow", ""));
   const originalFileCode = (await workspace.openTextDocument(originalFileUri)).getText();
   const langExtName = extname(originalFileUri.fsPath).slice(1);
   const output = await service.generateCode(langExtName, pseudocode, originalFileCode, originalFileUri, diff);
