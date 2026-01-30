@@ -2,7 +2,7 @@
   "name": "shadow-code-ai",
   "displayName": "Shadow Code AI",
   "description": "A novel approach to coding with AI.",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
