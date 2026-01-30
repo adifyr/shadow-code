@@ -1,7 +1,8 @@
 import {diffLines} from "diff";
 import {existsSync, mkdirSync, writeFileSync} from "fs";
 import {basename, dirname, extname, join, sep} from "path";
-import {commands, CompletionItem, CompletionItemKind, Extension, ExtensionContext, languages, MarkdownString, Position, ProgressLocation, Range, SnippetString, TextDocument, Uri, ViewColumn, window, workspace, WorkspaceEdit} from "vscode";
+import {commands, CompletionItem, CompletionItemKind, ExtensionContext, languages, MarkdownString, Position, ProgressLocation, Range, SnippetString, TextDocument, Uri, ViewColumn, window, workspace, WorkspaceEdit} from "vscode";
+import {Logger} from "./logger";
 import {ShadowCodeService} from "./service";
 
 export function activate(context: ExtensionContext) {
@@ -10,7 +11,10 @@ export function activate(context: ExtensionContext) {
   const service = ShadowCodeService.initialize(context.extensionPath);
   if (!service) {return;}
 
-  cleanupGhostCheckpoints(context);
+  // Clean up any ghost checkpoints.
+  cleanupGhostCheckpoints(context).catch((error) => {
+    Logger.error("Error cleaning up ghost checkpoints.", error);
+  });
 
   // Register Commands.
   context.subscriptions.push(commands.registerCommand("shadowCodeAI.openInShadowMode", async (uri: Uri) => {
@@ -32,7 +36,7 @@ export function activate(context: ExtensionContext) {
       const lineText = document.lineAt(position.line).text;
       const textBeforeCursor = lineText.substring(0, position.character);
       const quoteCount = (textBeforeCursor.match(/"/g) || []).length;
-      if (!/use\([^)]*$/.test(textBeforeCursor) || quoteCount % 2 === 0) {
+      if (!/context\([^)]*$/.test(textBeforeCursor) || quoteCount % 2 === 0) {
         return;
       }
       const extName = extname(document.uri.fsPath.replace(/\.shadow$/, "")).slice(1);
@@ -48,10 +52,10 @@ export function activate(context: ExtensionContext) {
   }));
   context.subscriptions.push(languages.registerCompletionItemProvider({language: "shadow", pattern: "**/*.shadow"}, {
     provideCompletionItems() {
-      const completionItem = new CompletionItem("use", CompletionItemKind.Function);
-      completionItem.insertText = new SnippetString('use("${1}")');
+      const completionItem = new CompletionItem("context", CompletionItemKind.Function);
+      completionItem.insertText = new SnippetString('context("${1}")');
       completionItem.documentation = new MarkdownString("Import external files for AI context.");
-      completionItem.detail = "Shadow Code AI: Use Function";
+      completionItem.detail = "Shadow Code AI: Context Function";
       return [completionItem];
     },
   }));
@@ -113,22 +117,31 @@ async function convertShadowCode(service: ShadowCodeService, context: ExtensionC
 }
 
 function buildDiff(oldText: string | undefined, newText: string): string {
-  if (!oldText) {
-    return newText.split("\n").map((line) => `+ ${line}`).join("\n");
+  // 1. Surgical Regex: Remove lines starting with context() and their trailing newline
+  // This version handles \r\n and ensures we don't leave double newlines
+  const contextRegex = /^\s*context\(.*?\)(\r?\n|$)/gm;
+  const oldTextRefined = oldText?.replace(contextRegex, "").trimEnd();
+  const newTextRefined = newText.replace(contextRegex, "").trimEnd();
+
+  // 2. Handle the "Fresh Start" case (No old text)
+  if (!oldTextRefined) {
+    return newTextRefined.split(/\r?\n/).map((line) => `+ ${line}`).join("\n");
   }
-  const changes = diffLines(oldText, newText);
+
+  // 3. Perform the Diff
+  const changes = diffLines(oldTextRefined, newTextRefined);
   const output: string[] = [];
   for (const change of changes) {
     const prefix = change.added ? '+ ' : (change.removed ? '- ' : '');
-    const lines = change.value.split('\n');
-    if (lines[lines.length - 1] === "") {
+    const lines = change.value.split(/\r?\n/);
+    if (lines.length > 0 && lines[lines.length - 1] === "") {
       lines.pop();
     }
     for (const line of lines) {
       output.push(`${prefix}${line}`);
     }
   }
-  return output.join('\n').trimEnd();
+  return output.join('\n');
 }
 
 async function cleanupGhostCheckpoints(context: ExtensionContext) {

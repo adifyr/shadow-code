@@ -63,10 +63,7 @@ export class ShadowCodeService {
     const result = await this.client.models.generateContent({
       model: this.model,
       contents: userPrompt,
-      config: {
-        systemInstruction: systemPrompt,
-        thinkingConfig: {thinkingBudget: 0}
-      }
+      config: {systemInstruction: systemPrompt}
     });
     const response = result.text?.replace(/```[\w]*\n/g, '').replace(/```/g, '').trim();
     Logger.info(`AI Response:\n${response}`);
@@ -74,8 +71,8 @@ export class ShadowCodeService {
   }
 
   private async extractContext(pseudocode: string, workspaceUri: Uri): Promise<string> {
-    const useBlocks = [...pseudocode.matchAll(/use\s*\(([^)]+)\)/gs)];
-    const allPaths = useBlocks.flatMap((block) => [...block[1].matchAll(/"([^"]+)"/g)].map((match) => match[1]));
+    const contextBlocks = [...pseudocode.matchAll(/context\s*\(([^)]+)\)/gs)];
+    const allPaths = contextBlocks.flatMap((block) => [...block[1].matchAll(/"([^"]+)"/g)].map((match) => match[1]));
     const fileResults = await Promise.all(allPaths.map(async (path) => {
       try {
         const contentBuffer = await workspace.fs.readFile(Uri.joinPath(workspaceUri, path));
