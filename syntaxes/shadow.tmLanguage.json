@@ -3,7 +3,7 @@
   "patterns": [
     {
       "name": "meta.function-call.shadow",
-      "begin": "\\b(use)\\s*(\\()",
+      "begin": "\\b(context)\\s*(\\()",
       "beginCaptures": {
         "1": {
           "name": "support.function.shadow"
