@@ -34,10 +34,21 @@ Install Shadow Code AI from the VSCode Marketplace.
 
 **Write this pseudocode:**
 ```
-stateless widget UserCard { UserCard(string name, string email)
+stless UserCard {
+  String name email
 
-build { Card( child: Column([ Text(name, size: 18, weight: bold), Text(email, color: gray), ]) ) } }
+  UserCard(name, email)
 
+  build {
+    card(
+      column([
+        text(name, 18, bold),
+        4,
+        text(email, grey)
+      ])
+    )
+  }
+}
 ```
 
 **Get this code:**
@@ -65,6 +76,7 @@ class UserCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          const SizedBox(height: 4.0),
           Text(
             email,
             style: TextStyle(color: Colors.grey),

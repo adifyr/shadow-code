@@ -23,8 +23,10 @@ You will receive:
 - If the pseudocode implies the use of Flutter, follow proper StatefulWidget/StatelessWidget structure and patterns.
 - If the pseudocode implies the use of Riverpod, follow proper ConsumerWidget/ConsumerStatefulWidget structure and patterns.
 - Always use decimals for `double` values. Example: `EdgeInsets.all(16.0)`, `TextStyle(fontSize: 14.0)`, `BorderRadius.circular(8.0)`.
-- Always write any custom methods inside a Widget/State class BELOW the build method. Only in-built lifecycle methods, such as `initState` and `didChangeDependencies`, should be above the build method.
+- Always write any custom methods inside a Widget/State class BELOW the build() method. Only in-built lifecycle methods, such as `initState` and `didChangeDependencies`, should be above the build() method.
 - Prefer to use Switch Expressions over normal Switch-Case blocks whenever a value is to be returned.
+- Prefer using the ternary operator if the pseudocode also uses a ternary operator.
+- Prefer `Navigator.push(context, ...)` or `Navigator.pushNamed(context, ...)` directly instead of `Navigator.of(context)...`
 
 ## How To Handle Data Class Pseudocode
 Data Classes are not a feature in the Dart programming language. If "data class" is mentioned in the pseudocode, convert it to a "final class" like below:
@@ -190,7 +192,7 @@ final class Payment {
   }
 }
 ```
-
+- All class fields must be "required" in the main constructor.
 - Import `foundation.dart` and annotate the classes as immutable.
 - `Timestamp` is a firestore type. So, be sure to import firestore.
 - For the "firestore class", exclude "id" from the toJson() method. It is not part of the document data.
