@@ -18,7 +18,7 @@ export class Logger {
 
   private static appendLine(level: string, message: string) {
     if (!this.channel) {
-      this.channel = vscode.window.createOutputChannel("Shadow Code AI");
+      this.channel = vscode.window.createOutputChannel("Shadow Code");
     }
     const timestamp = new Date().toLocaleTimeString();
     this.channel.appendLine(`[${timestamp}] [${level}] ${message}`);

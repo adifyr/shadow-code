@@ -1,18 +1,18 @@
 {
-  "name": "shadow-code-ai",
-  "displayName": "Shadow Code AI",
+  "name": "shadow-code",
+  "displayName": "Shadow Code",
   "description": "A novel approach to coding with AI.",
   "publisher": "adifyr",
   "version": "0.3.0",
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
-      "description": "Shadow Code AI requires a trusted workspace to function."
+      "description": "Shadow Code requires a trusted workspace to function."
     }
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/adifyr/shadow-code-ai.git"
+    "url": "https://github.com/adifyr/shadow-code.git"
   },
   "engines": {
     "vscode": "^1.108.0"
@@ -37,17 +37,22 @@
     },
     "commands": [
       {
-        "command": "ShadowCodeAI.openInShadowMode",
-        "title": "Open In Shadow Mode",
+        "command": "ShadowCode.openInShadowMode",
+        "title": "Shadow Code: Open In Shadow Mode",
         "icon": "$(shadow-mode)"
       },
       {
-        "command": "ShadowCodeAI.copyCode",
+        "command": "ShadowCode.selectModel",
+        "title": "Shadow Code: Select AI Model For Code Generation",
+        "shortTitle": "Select Shadow Code AI Model"
+      },
+      {
+        "command": "ShadowCode.copyCode",
         "title": "Copy Over Existing Code",
         "icon": "$(copy)"
       },
       {
-        "command": "ShadowCodeAI.convertShadowCode",
+        "command": "ShadowCode.convertShadowCode",
         "title": "Convert To Code",
         "icon": "$(sparkle)"
       }
@@ -73,7 +78,7 @@
     ],
     "keybindings": [
       {
-        "command": "ShadowCodeAI.convertShadowCode",
+        "command": "ShadowCode.convertShadowCode",
         "key": "ctrl+alt+enter",
         "mac": "cmd+alt+enter",
         "when": "resourceExtname == .shadow || editorLangId == shadow"
@@ -82,33 +87,33 @@
     "menus": {
       "editor/title": [
         {
-          "command": "ShadowCodeAI.openInShadowMode",
+          "command": "ShadowCode.openInShadowMode",
           "when": "resourceScheme == file && resourceExtname != .shadow",
           "group": "navigation"
         },
         {
-          "command": "ShadowCodeAI.copyCode",
+          "command": "ShadowCode.copyCode",
           "when": "resourceExtname == .shadow",
           "group": "navigation"
         },
         {
-          "command": "ShadowCodeAI.convertShadowCode",
+          "command": "ShadowCode.convertShadowCode",
           "when": "resourceExtname == .shadow",
           "group": "navigation"
         }
       ],
       "editor/title/context": [
         {
-          "command": "ShadowCodeAI.openInShadowMode",
+          "command": "ShadowCode.openInShadowMode",
           "when": "resourceScheme == file && resourceExtname != .shadow",
           "group": "navigation"
         }
       ]
     },
     "configuration": {
-      "title": "Shadow Code AI",
+      "title": "Shadow Code",
       "properties": {
-        "ShadowCodeAI.modelId": {
+        "ShadowCode.modelId": {
           "type": "string",
           "title": "AI Model",
           "description": "The AI model to use for code generation."
@@ -144,8 +149,6 @@
     "typescript-eslint": "^8.48.1"
   },
   "dependencies": {
-    "@google/genai": "^1.38.0",
-    "@openrouter/sdk": "^0.4.0",
     "diff": "^8.0.3",
     "js-yaml": "^4.1.1"
   }

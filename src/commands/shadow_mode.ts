@@ -2,7 +2,7 @@ import {existsSync, mkdirSync, writeFileSync} from "fs";
 import {basename, dirname, join} from "path";
 import {commands, ExtensionContext, Uri, ViewColumn, window, workspace} from "vscode";
 
-const COMMAND_SHADOW_MODE = "ShadowCodeAI.openInShadowMode";
+const COMMAND_SHADOW_MODE = "ShadowCode.openInShadowMode";
 
 export default function registerShadowModeCommand(context: ExtensionContext) {
   context.subscriptions.push(commands.registerCommand(COMMAND_SHADOW_MODE, async (uri: Uri) => {

@@ -42,7 +42,7 @@ export default class TypeScriptHandler implements ILanguageHandler {
           return;
         }
         Logger.info(`Dependencies Installed. Stdout:\n${stdout}`);
-        window.showInformationMessage(`Shadow Code AI: Installed ${required.length} Missing Dependencies`);
+        window.showInformationMessage(`Shadow Code: Installed ${required.length} Missing Dependencies`);
       });
     }
   }

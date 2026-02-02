@@ -6,7 +6,7 @@ export default function registerContextFuncCompletionItemProvider(context: Exten
       const completionItem = new CompletionItem("context", CompletionItemKind.Function);
       completionItem.insertText = new SnippetString('context("${1}")');
       completionItem.documentation = new MarkdownString("Import external files for AI context.");
-      completionItem.detail = "Shadow Code AI: Context Function";
+      completionItem.detail = "Shadow Code: Context Function";
       return [completionItem];
     },
   }));

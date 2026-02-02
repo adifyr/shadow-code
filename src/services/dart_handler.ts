@@ -47,7 +47,7 @@ export default class DartHandler implements ILanguageHandler {
             window.showErrorMessage(`Failed to install dependenciess: ${stderr}`);
             return;
           }
-          window.showInformationMessage(`Shadow Code AI: Installed ${required.length} Missing Dependencies`);
+          window.showInformationMessage(`Shadow Code: Installed ${required.length} Missing Dependencies`);
         });
       }
     } catch (err) {

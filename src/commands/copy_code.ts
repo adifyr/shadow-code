@@ -1,7 +1,7 @@
 import {sep} from "path";
 import {commands, ExtensionContext, Range, Uri, window, workspace, WorkspaceEdit} from "vscode";
 
-const COMMAND_COPY_CODE = "ShadowCodeAI.copyCode";
+const COMMAND_COPY_CODE = "ShadowCode.copyCode";
 
 export default function registerCopyCodeCommand(context: ExtensionContext) {
   context.subscriptions.push(commands.registerCommand(COMMAND_COPY_CODE, async (uri: Uri) => {
