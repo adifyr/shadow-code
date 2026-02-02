@@ -14,18 +14,21 @@ export default class TypeScriptHandler implements ILanguageHandler {
   }
 
   addMissingDependencies(configFileUri: Uri, config: string, output: string): void {
-    const pkg = JSON.parse(config);
-    const projectName = pkg.name ?? "";
+    const pkg = JSON.parse(config) as {
+      name?: string,
+      dependencies?: Record<string, string>,
+      devDependencies?: Record<string, string>,
+    };
     const deps = new Set<string>([
+      ...builtinModules,
+      ...(pkg.name ? [pkg.name] : []),
       ...Object.keys(pkg.dependencies ?? {}),
       ...Object.keys(pkg.devDependencies ?? {}),
-      ...builtinModules,
-      projectName,
     ]);
     const importsRegex = /(?:import\s+(?:.*?\s+from\s+)?|require\s*\(['"])(@?[a-zA-Z0-9-._]+)(?:\/.*?)?['"]\)?/g;
     const packages = new Set<string>();
-    let match: RegExpExecArray | null;
-    while ((match = importsRegex.exec(output)) !== null) {
+    const matches = output.matchAll(importsRegex);
+    for (const match of matches) {
       if (!match[1].startsWith(".")) {
         packages.add(match[1]);
       }
@@ -39,7 +42,7 @@ export default class TypeScriptHandler implements ILanguageHandler {
           return;
         }
         Logger.info(`Dependencies Installed. Stdout:\n${stdout}`);
-        window.setStatusBarMessage(`$(check) Installed ${required.entries.length} Dependencies`, 3000);
+        window.showInformationMessage(`Shadow Code AI: Installed ${required.length} Missing Dependencies`);
       });
     }
   }

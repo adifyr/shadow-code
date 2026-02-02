@@ -16,16 +16,22 @@ export default class DartHandler implements ILanguageHandler {
   addMissingDependencies(configFileUri: Uri, config: string, output: string): void {
     try {
       // Get existing dependencies from pubspec.
-      const doc = load(config) as {name?: string, dependencies?: string[], dev_dependencies?: string[]};
-      const deps = new Set<string>(["flutter", "flutter_test", ...(doc.name ? [doc.name] : [])]);
-      if (doc.dependencies && doc.dev_dependencies) {
-        [...Object.keys(doc.dependencies), ...Object.keys(doc.dev_dependencies)].forEach((pkg) => deps.add(pkg));
-        console.log("Pubspec Dependencies: " + Array.from(deps).join(", "));
-      }
+      const doc = load(config) as {
+        name?: string,
+        dependencies?: Record<string, unknown>,
+        dev_dependencies?: Record<string, unknown>,
+      };
+      const deps = new Set<string>([
+        "flutter",
+        "flutter_test",
+        ...(doc.name ? [doc.name] : []),
+        ...Object.keys(doc.dependencies ?? {}),
+        ...Object.keys(doc.dev_dependencies ?? {}),
+      ]);
 
       // Get package imports from output code.
       const packages = new Set<string>([]);
-      const matches = output.matchAll(/import\s+['"]package:([^/]+)\/.*?['"];/g);
+      const matches = output.matchAll(/(?:import|export)\s+['"]package:([a-zA-Z0-9_]+)/g);
       for (const match of matches) {
         packages.add(match[1]);
       }
