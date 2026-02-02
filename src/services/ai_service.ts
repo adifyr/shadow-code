@@ -40,7 +40,7 @@ export class AIService {
   private async generateCode(systemPrompt: string, userPrompt: string, fileUri: Uri): Promise<string | undefined> {
     const models = await lm.selectChatModels({...(this.modelId && {id: this.modelId})});
     if (models.length === 0) {
-      window.showErrorMessage("No LLM Models found. Please install a model provider (like Github Copilot).");
+      window.showErrorMessage("No LLM Models found. Please install a model provider (Example: Github Copilot).");
       return;
     }
     let model: LanguageModelChat;
