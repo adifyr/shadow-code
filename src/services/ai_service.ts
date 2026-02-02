@@ -21,7 +21,7 @@ export class AIService {
     pseudocode: string,
     existingCode: string,
     originalFileUri: Uri,
-  ) {
+  ): Promise<boolean> {
     const [systemPrompt, rawUserPrompt] = this.getPrompts(langExtName);
     const diff = this.buildDiff(oldPseudocode, pseudocode);
     const context = await this.extractContext(pseudocode, workspace.getWorkspaceFolder(originalFileUri)!.uri);
@@ -35,6 +35,7 @@ export class AIService {
     if (configFileUri && output && config.length > 0) {
       handler.addMissingDependencies(configFileUri, config, output);
     }
+    return output !== undefined;
   }
 
   private async generateCode(systemPrompt: string, userPrompt: string, fileUri: Uri): Promise<string | undefined> {
@@ -76,10 +77,10 @@ export class AIService {
       const doc = originalFileEditor.document;
       edit.delete(new Range(doc.positionAt(0), doc.positionAt(doc.getText().length)));
     });
-    const fragments: string[] = [];
+    let output = "";
     try {
       for await (const fragment of response.text) {
-        fragments.push(fragment);
+        output += fragment;
         await originalFileEditor.edit((edit) => {
           const lastLine = originalFileEditor.document.lineAt(originalFileEditor.document.lineCount - 1);
           const position = new Position(lastLine.lineNumber, lastLine.text.length);
@@ -98,7 +99,7 @@ export class AIService {
     } finally {
       cancellationSource.dispose();
     }
-    const output = fragments.join('').trim().replace(/^```[a-z]*\n/i, "").replace(/\n```$/, "").trim();
+    output = output.replace(/^[\s\n]*```[a-z]*\n?|(?:\n?```[\s\n]*)$/gi, "").trim();
     await originalFileEditor.edit((edit) => {
       const doc = originalFileEditor.document;
       edit.replace(new Range(doc.positionAt(0), doc.positionAt(doc.getText().length)), output);

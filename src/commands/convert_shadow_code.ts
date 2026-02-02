@@ -13,12 +13,15 @@ export default function registerConvertShadowCodeCommand(context: ExtensionConte
         window.showErrorMessage("Error: Document not found or is not a '.shadow' file.");
         return;
       }
+      const pseudocode = doc.getText();
       const originalFileUri = Uri.file(doc.uri.fsPath.replace(/[\\/]\.shadows[\\/]/, sep).replace(/\.shadow$/, ""));
       const existingCode = (await workspace.openTextDocument(originalFileUri)).getText();
-      const oldPseudocode = context.workspaceState.get<string>("shadow_checkpoint_" + doc.uri.toString());
+      const checkpointKey = "shadow_checkpoint_" + doc.uri.toString();
+      const oldPseudocode = context.workspaceState.get<string>(checkpointKey);
       const langExtName = extname(originalFileUri.fsPath).slice(1);
-      await service.convertShadowCode(langExtName, oldPseudocode, doc.getText(), existingCode, originalFileUri);
-      return;
+      if (await service.convertShadowCode(langExtName, oldPseudocode, pseudocode, existingCode, originalFileUri)) {
+        context.workspaceState.update(checkpointKey, pseudocode);
+      }
     });
   }));
 }

@@ -41,13 +41,12 @@ export default class DartHandler implements ILanguageHandler {
       const required = Array.from(packages).filter((pkg) => !deps.has(pkg));
       console.log("Pending Required Packages: " + required.join(", "));
       if (required.length > 0) {
-        exec(`flutter pub add ${required.join(" ")}`, {cwd: dirname(configFileUri.fsPath)}, (err, stdout, stderr) => {
+        exec(`flutter pub add ${required.join(" ")}`, {cwd: dirname(configFileUri.fsPath)}, (err, _, stderr) => {
           if (err) {
             Logger.error("Failed to install dependencies", err.message);
-            window.showErrorMessage(`Failed to install deps: ${stderr}`);
+            window.showErrorMessage(`Failed to install dependenciess: ${stderr}`);
             return;
           }
-          console.log(`Dependencies Installed. Stdout:\n${stdout}`);
           window.showInformationMessage(`Shadow Code AI: Installed ${required.length} Missing Dependencies`);
         });
       }
