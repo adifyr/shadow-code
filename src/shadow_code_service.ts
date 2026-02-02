@@ -2,15 +2,15 @@ import {GoogleGenAI} from "@google/genai";
 import {readFileSync} from "fs";
 import {join} from "path";
 import {TextDecoder} from "util";
-import {Uri, window, workspace} from "vscode";
-import {Logger} from "./logger";
+import {Range, Uri, window, workspace, WorkspaceEdit} from "vscode";
+import {Logger} from "./utils/logger";
 
 export class ShadowCodeService {
   constructor(private extensionPath: string, private model: string, private client: GoogleGenAI) {
     Logger.info("Model Name: " + model);
   }
 
-  static initialize(extPath: string): ShadowCodeService | undefined {
+  static initialize(extensionPath: string): ShadowCodeService | undefined {
     const config = workspace.getConfiguration("shadowCodeAI");
     const apiKey = config.get<string>("apiKey");
     if (!apiKey || apiKey.length === 0) {
@@ -18,21 +18,34 @@ export class ShadowCodeService {
       return;
     }
     Logger.info(`API Key: ${apiKey}`);
-    return new ShadowCodeService(extPath, config.get<string>("model")!, new GoogleGenAI({apiKey}));
+    return new ShadowCodeService(extensionPath, config.get<string>("model")!, new GoogleGenAI({apiKey}));
   }
 
-  async generateCode(
+  async handleDartGeneration(originalFileUri: Uri, systemPrompt: string, baseUserPrompt: string) {
+    const pubspecUris = await workspace.findFiles("pubspec.yaml");
+    const pubspec = pubspecUris.length > 0 ? await workspace.openTextDocument(pubspecUris[0]) : undefined;
+    const userPrompt = baseUserPrompt.replace("{{pubspec}}", pubspec?.getText() ?? "");
+    const output = await this.generateCode(systemPrompt, userPrompt);
+    if (output) {
+      const edit = new WorkspaceEdit();
+      edit.replace(originalFileUri, new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), output);
+      await workspace.applyEdit(edit);
+    }
+  }
+
+  async generateCode_Old(
     langExtName: string = "default",
     pseudocode: string,
     existingCode: string,
     originalFileUri: Uri,
     diff: string,
-  ): Promise<string | undefined> {
+  ): Promise<{code: string | undefined, config?: string, configUri?: Uri}> {
     const systemPrompt = readFileSync(
       join(this.extensionPath, `assets/prompts/${langExtName}/system_prompt.md`), "utf-8"
     ).replaceAll("{{language}}", langExtName);
-    const workspaceUri = workspace.getWorkspaceFolder(originalFileUri)!.uri;
-    const context = await this.extractContext(pseudocode, workspaceUri);
+    const context = await this.extractContext(pseudocode, workspace.getWorkspaceFolder(originalFileUri)!.uri);
+    let config: string | undefined;
+    let configUri: Uri | undefined;
     let userPrompt = readFileSync(join(this.extensionPath, `assets/prompts/${langExtName}/user_prompt.md`), "utf-8")
       .replace("{{pseudocode}}", diff)
       .replace("{{existing_code}}", existingCode)
@@ -43,6 +56,8 @@ export class ShadowCodeService {
       const pubspecUris = await workspace.findFiles("pubspec.yaml");
       const pubspec = pubspecUris.length > 0 ? textDecoder.decode(await workspace.fs.readFile(pubspecUris[0])) : "";
       userPrompt = userPrompt.replace("{{pubspec}}", pubspec);
+      config = pubspec;
+      configUri = pubspecUris[0];
     } else if (langExtName === "ts") {
       const packageJsonUris = await workspace.findFiles("**/package.json", "**/node_modules/**");
       Logger.info("Found URIs for package.json:\n" + packageJsonUris.map((uri) => uri.toString()).toString());
@@ -66,6 +81,18 @@ export class ShadowCodeService {
       config: {systemInstruction: systemPrompt}
     });
     const response = result.text?.replace(/```[\w]*\n/g, '').replace(/```/g, '').trim();
+    Logger.info(`AI Response:\n${response}`);
+    return {code: response, config, configUri};
+  }
+
+  private async generateCode(systemPrompt: string, userPrompt: string): Promise<string | undefined> {
+    Logger.info(`User Prompt:\n${userPrompt}`);
+    const result = await this.client.models.generateContent({
+      model: this.model,
+      contents: userPrompt,
+      config: {systemInstruction: systemPrompt},
+    });
+    const response = result.text?.replace(/```[\w]*\n/g, "").replace(/```/g, "").trim();
     Logger.info(`AI Response:\n${response}`);
     return response;
   }
