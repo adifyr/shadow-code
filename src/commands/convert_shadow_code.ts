@@ -2,11 +2,11 @@ import {extname, sep} from "path";
 import {commands, ExtensionContext, ProgressLocation, TextDocument, Uri, window, workspace} from "vscode";
 import {AIService} from "../services/ai_service";
 
-const COMMAND_CONVERT_CODE = "ShadowCodeAI.convertShadowCode";
+const COMMAND_CONVERT_CODE = "ShadowCode.convertShadowCode";
 
 export default function registerConvertShadowCodeCommand(context: ExtensionContext, service: AIService) {
   context.subscriptions.push(commands.registerCommand(COMMAND_CONVERT_CODE, async () => {
-    window.withProgress({location: ProgressLocation.Window, title: "Shadow Code AI"}, async (progress) => {
+    window.withProgress({location: ProgressLocation.Window, title: "Shadow Code"}, async (progress) => {
       progress.report({message: "Converting Shadow Code"});
       const doc = window.activeTextEditor?.document;
       if (!doc || !doc.uri.fsPath.endsWith(".shadow")) {

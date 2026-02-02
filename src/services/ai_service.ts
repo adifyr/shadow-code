@@ -1,18 +1,17 @@
-import {diffLines} from "diff";
-import {readFile, readFileSync} from "fs";
+import {readFileSync} from "fs";
 import {join} from "path";
-import {CancellationTokenSource, commands, ConfigurationTarget, ExtensionContext, LanguageModelChat, LanguageModelChatMessage, LanguageModelChatToolMode, lm, Position, Range, Uri, ViewColumn, window, workspace, WorkspaceConfiguration} from "vscode";
-import {getLanguageHandler, ILanguageHandler} from "./handler_interface";
-import DartHandler from "./dart_handler";
+import {CancellationTokenSource, ConfigurationTarget, LanguageModelChat, LanguageModelChatMessage, lm, Position, Range, Uri, ViewColumn, window, workspace, WorkspaceConfiguration} from "vscode";
+import {buildDiff} from "../utils/diff_builder";
 import {Logger} from "../utils/logger";
+import {getLanguageHandler} from "./handler_interface";
 
 export class AIService {
-  private workspaceConfig: WorkspaceConfiguration;
+  private config: WorkspaceConfiguration;
   private modelId: string | undefined;
 
   constructor(private extensionPath: string) {
-    this.workspaceConfig = workspace.getConfiguration("ShadowCodeAI");
-    this.modelId = this.workspaceConfig.get<string>("modelId");
+    this.config = workspace.getConfiguration("ShadowCode");
+    this.modelId = this.config.get<string>("modelId");
   }
 
   async convertShadowCode(
@@ -23,7 +22,7 @@ export class AIService {
     originalFileUri: Uri,
   ): Promise<boolean> {
     const [systemPrompt, rawUserPrompt] = this.getPrompts(langExtName);
-    const diff = this.buildDiff(oldPseudocode, pseudocode);
+    const diff = buildDiff(oldPseudocode, pseudocode);
     const context = await this.extractContext(pseudocode, workspace.getWorkspaceFolder(originalFileUri)!.uri);
     const baseUserPrompt = rawUserPrompt
       .replace("{{pseudocode}}", diff)
@@ -39,29 +38,8 @@ export class AIService {
   }
 
   private async generateCode(systemPrompt: string, userPrompt: string, fileUri: Uri): Promise<string | undefined> {
-    const models = await lm.selectChatModels({...(this.modelId && {id: this.modelId})});
-    if (models.length === 0) {
-      window.showErrorMessage("No LLM Models found. Please install a model provider (Example: Github Copilot).");
-      return;
-    }
-    let model: LanguageModelChat;
-    if (models.length > 1) {
-      const selection = await window.showQuickPick(models.map((model) => model.name), {
-        title: "Select Model for Shadow Code AI",
-        prompt: "Pick a model to handle the code generation for Shadow Code AI.",
-        canPickMany: false,
-      });
-      if (!selection) {
-        window.showWarningMessage("No model selected. Unable to proceed with Shadow Code Conversion.");
-        return;
-      }
-      model = models.find((m) => m.name === selection)!;
-      Logger.info(`Selected Model ID: ${model.id}`);
-      await this.workspaceConfig.update("modelId", model.id, true);
-      window.showInformationMessage(`Model for Shadow Code AI set to ${model.name}`);
-    } else {
-      model = models[0];
-    }
+    const model = await this.selectModel(this.modelId);
+    if (!model) {return;}
     const cancellationSource = new CancellationTokenSource();
     const response = await model.sendRequest([
       LanguageModelChatMessage.User(systemPrompt),
@@ -88,13 +66,9 @@ export class AIService {
         });
       }
     } catch (err) {
-      const error = (err as Error).message;
-      Logger.info(`Error editing fragments: ${error}`);
-      await originalFileEditor.edit((edit) => {
-        const lastLine = originalFileEditor.document.lineAt(originalFileEditor.document.lineCount - 1);
-        const position = new Position(lastLine.lineNumber, lastLine.text.length);
-        edit.insert(position, error);
-      });
+      const error = err as Error;
+      Logger.error(`Error editing fragments: ${error.message}`, error.stack);
+      await originalFileEditor.edit((edit) => edit.insert(originalFileEditor.selection.active, `// ${error.message}`));
       return;
     } finally {
       cancellationSource.dispose();
@@ -113,24 +87,6 @@ export class AIService {
     return prompt.replaceAll("{{language}}", langExtname);
   });
 
-
-  private buildDiff(oldText: string | undefined, newText: string): string {
-    const contextRegex = /^\s*context\(.*?\)(\r?\n|$)/gm;
-    const oldTextRefined = oldText?.replace(contextRegex, "").trimEnd();
-    const newTextRefined = newText.replace(contextRegex, "").trimEnd();
-    if (!oldTextRefined) {
-      return newTextRefined.split(/\r?\n/).map((line) => `+ ${line}`).join("\n");
-    }
-    const changes = diffLines(oldTextRefined, newTextRefined);
-    const lineDiffs: string[] = [];
-    for (const change of changes) {
-      const prefix = change.added ? "+ " : (change.removed ? "- " : "  ");
-      const lines = change.value.split(/\r?\n/);
-      lineDiffs.push(...lines.map((line) => `${prefix}${line}`));
-    }
-    return lineDiffs.join('\n').trim();
-  }
-
   private async extractContext(pseudocode: string, workspaceUri: Uri): Promise<string> {
     const contextBlocks = [...pseudocode.matchAll(/context\s*\(([^)]+)\)/gs)];
     const allPaths = contextBlocks.flatMap((block) => [...block[1].matchAll(/"([^"]+)"/g)].map((match) => match[1]));
@@ -148,5 +104,34 @@ export class AIService {
       return acc + `**${item.path}:**\n\`\`\`\n${item.content}\n\`\`\`\n\n`;
     }, "").trim();
     return context;
+  }
+
+  async selectModel(modelId?: string): Promise<LanguageModelChat | undefined> {
+    const models = await lm.selectChatModels({...(modelId && {id: modelId})});
+    if (models.length === 1) {
+      return models[0];
+    } else if (models.length === 0) {
+      window.showErrorMessage("No AI Models found. Please install a model provider (Example: Github Copilot).");
+      return;
+    }
+    const selection = await window.showQuickPick(models.map((model) => model.name), {
+      title: "Select AI Model for Shadow Code",
+      prompt: "Select an AI model to handle the code generation for Shadow Code. 'Auto' can't be used by extensions.",
+      canPickMany: false,
+    });
+    if (!selection) {
+      window.showWarningMessage("No model selected. Unable to proceed with Shadow Code Conversion.");
+      return;
+    }
+    const model = models.find((model) => model.name === selection)!;
+    if (model.id === "auto") {
+      window.showWarningMessage(
+        "Shadow Code: 'Auto' is an internal setting and can't be used by extensions. Please select a specific model."
+      );
+      return;
+    }
+    this.config.update("modelId", model.id, ConfigurationTarget.Global);
+    window.showInformationMessage(`AI Model selected for Shadow Code: ${model.name}`);
+    return model;
   }
 }

@@ -14,7 +14,7 @@ const esbuildProblemMatcherPlugin = {
 			console.log('[watch] build started');
 		});
 		build.onEnd((result) => {
-			result.errors.forEach(({ text, location }) => {
+			result.errors.forEach(({text, location}) => {
 				console.error(`✘ [ERROR] ${text}`);
 				console.error(`    ${location.file}:${location.line}:${location.column}:`);
 			});
@@ -43,7 +43,7 @@ async function main() {
 		],
 		mainFields: ['module', 'main'],
 		target: 'node18',
-		banner: {js: "// Shadow Code AI Extension - Bundled With ESBuild"}
+		banner: {js: "// Shadow Code Extension - Bundled With ESBuild"}
 	});
 
 	if (watch) {
