@@ -13,10 +13,5 @@
 {{package_json}}
 ```
 
-# tsconfig.json File
-```json
-{{tsconfig}}
-```
-
 # Additional Typescript Code For Context
 {{context}}

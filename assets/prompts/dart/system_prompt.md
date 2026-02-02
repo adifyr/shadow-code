@@ -48,7 +48,7 @@ data class User {
 
 **Output Code:**
 ```dart
-import 'package:material/foundation.dart';
+import 'package:flutter/foundation.dart';
 
 @immutable
 final class User {
@@ -132,7 +132,7 @@ firestore class Payment {
 
 **Output Code:**
 ```dart
-import 'package:material/foundation.dart';
+import 'package:flutter/foundation.dart';
 
 @immutable
 final class Payment {
@@ -182,6 +182,7 @@ final class Payment {
     DateTime? updatedAt,
   }) {
     return Payment(
+      id: id,
       fromUser: fromUser ?? this.fromUser,
       toUser: toUser ?? this.toUser,
       description: description ?? this.description,

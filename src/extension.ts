@@ -1,161 +1,30 @@
-import {diffLines} from "diff";
-import {existsSync, mkdirSync, writeFileSync} from "fs";
-import {basename, dirname, extname, join, sep} from "path";
-import {commands, CompletionItem, CompletionItemKind, ExtensionContext, languages, MarkdownString, Position, ProgressLocation, Range, SnippetString, TextDocument, Uri, ViewColumn, window, workspace, WorkspaceEdit} from "vscode";
-import {Logger} from "./logger";
-import {ShadowCodeService} from "./service";
+import {ExtensionContext} from "vscode";
+import registerConvertShadowCodeCommand from "./commands/convert_shadow_code";
+import registerCopyCodeCommand from "./commands/copy_code";
+import registerShadowModeCommand from "./commands/shadow_mode";
+import registerContextFilesCompletionItemProvider from "./providers/context_files_provider";
+import registerContextFuncCompletionItemProvider from "./providers/context_func_provider";
+import {AIService} from "./services/ai_service";
+import cleanupGhostCheckpoints from "./utils/cleanup";
+import {Logger} from "./utils/logger";
 
 export function activate(context: ExtensionContext) {
   // Initialize Shadow Code Service.
-  console.log("Extension 'Shadow Code AI' activated.");
-  const service = ShadowCodeService.initialize(context.extensionPath);
+  Logger.info("Extension 'Shadow Code AI' activated.");
+  const service = new AIService(context.extensionPath);
   if (!service) {return;}
 
   // Clean up any ghost checkpoints.
-  cleanupGhostCheckpoints(context).catch((error) => {
-    Logger.error("Error cleaning up ghost checkpoints.", error);
-  });
+  cleanupGhostCheckpoints(context).catch((err) => Logger.error("Error cleaning up ghost checkpoints.", err));
 
   // Register Commands.
-  context.subscriptions.push(commands.registerCommand("shadowCodeAI.openInShadowMode", async (uri: Uri) => {
-    await openShadowFile(uri, context);
-  }));
-  context.subscriptions.push(commands.registerCommand("shadowCodeAI.copyCode", async (uri: Uri) => {
-    await copyCode(uri, context);
-  }));
-  context.subscriptions.push(commands.registerCommand("shadowCodeAI.generateCode", () => {
-    window.withProgress({location: ProgressLocation.Window, title: "Shadow Code AI"}, async (progress) => {
-      progress.report({message: "Converting Shadow Code"});
-      await convertShadowCode(service, context, window.activeTextEditor?.document);
-    });
-  }));
+  registerShadowModeCommand(context);
+  registerConvertShadowCodeCommand(context, service);
+  registerCopyCodeCommand(context);
 
-  // Register Completion Providers.
-  context.subscriptions.push(languages.registerCompletionItemProvider({language: "shadow", pattern: "**/*.shadow"}, {
-    async provideCompletionItems(document: TextDocument, position: Position) {
-      const lineText = document.lineAt(position.line).text;
-      const textBeforeCursor = lineText.substring(0, position.character);
-      const quoteCount = (textBeforeCursor.match(/"/g) || []).length;
-      if (!/context\([^)]*$/.test(textBeforeCursor) || quoteCount % 2 === 0) {
-        return;
-      }
-      const extName = extname(document.uri.fsPath.replace(/\.shadow$/, "")).slice(1);
-      const files = await workspace.findFiles({dart: "lib/**/*", js: "src/**/*", ts: "src/**/*"}[extName] ?? "**/*");
-      const completionItems = files.map((file_uri) => {
-        const relativePath = workspace.asRelativePath(file_uri);
-        const item = new CompletionItem(relativePath, CompletionItemKind.File);
-        item.insertText = relativePath;
-        return item;
-      });
-      return completionItems;
-    }
-  }));
-  context.subscriptions.push(languages.registerCompletionItemProvider({language: "shadow", pattern: "**/*.shadow"}, {
-    provideCompletionItems() {
-      const completionItem = new CompletionItem("context", CompletionItemKind.Function);
-      completionItem.insertText = new SnippetString('context("${1}")');
-      completionItem.documentation = new MarkdownString("Import external files for AI context.");
-      completionItem.detail = "Shadow Code AI: Context Function";
-      return [completionItem];
-    },
-  }));
-}
-
-async function openShadowFile(uri: Uri, context: ExtensionContext) {
-  const workspaceFolder = workspace.getWorkspaceFolder(uri);
-  if (!workspaceFolder) {
-    window.showErrorMessage("Cannot enable Shadow Mode for a file that isn't inside a workspace folder.");
-    return;
-  }
-  const shadowDir = join(workspaceFolder.uri.fsPath, ".shadows", dirname(workspace.asRelativePath(uri)));
-  const shadowFilePath = join(shadowDir, basename(uri.fsPath) + ".shadow");
-  mkdirSync(shadowDir, {recursive: true});
-  if (!existsSync(shadowFilePath)) {
-    const originalFileCode = (await workspace.openTextDocument(uri)).getText();
-    writeFileSync(shadowFilePath, originalFileCode);
-    await context.workspaceState.update(`shadow_checkpoint_${Uri.file(shadowFilePath)}`, originalFileCode);
-  }
-  const doc = await workspace.openTextDocument(shadowFilePath);
-  window.showTextDocument(doc, {viewColumn: ViewColumn.Beside});
-}
-
-async function copyCode(uri: Uri, context: ExtensionContext) {
-  if (!uri.fsPath.endsWith(".shadow")) {
-    window.showErrorMessage("Error: Document is not a '.shadow' file.");
-    return;
-  }
-  const originalFileUri = Uri.file(uri.fsPath.replace(/[\\/]\.shadows[\\/]/, sep).replace(/\.shadow$/, ""));
-  const originalFileCode = new TextDecoder().decode(await workspace.fs.readFile(originalFileUri));
-  const edit = new WorkspaceEdit();
-  edit.replace(uri, new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), originalFileCode);
-  await workspace.applyEdit(edit);
-  await context.workspaceState.update(`shadow_checkpoint_${uri.toString()}`, originalFileCode);
-}
-
-async function convertShadowCode(service: ShadowCodeService, context: ExtensionContext, doc?: TextDocument) {
-  if (!doc) {
-    window.showErrorMessage("Error: No file opened.");
-    return;
-  }
-  if (!doc.uri.fsPath.endsWith(".shadow")) {
-    window.showErrorMessage("Error: Document is not a '.shadow' file.");
-    return;
-  }
-  const pseudocode = doc.getText();
-  const diff = buildDiff(context.workspaceState.get<string>(`shadow_checkpoint_${doc.uri.toString()}`), pseudocode);
-  const originalFileUri = Uri.file(doc.uri.fsPath.replace(/[\\/]\.shadows[\\/]/, sep).replace(/\.shadow$/, ""));
-  const originalFileCode = (await workspace.openTextDocument(originalFileUri)).getText();
-  const langExtName = extname(originalFileUri.fsPath).slice(1);
-  const output = await service.generateCode(langExtName, pseudocode, originalFileCode, originalFileUri, diff);
-  if (output) {
-    const edit = new WorkspaceEdit();
-    edit.replace(originalFileUri, new Range(0, 0, Number.MAX_VALUE, Number.MAX_VALUE), output);
-    await workspace.applyEdit(edit);
-    await context.workspaceState.update(`shadow_checkpoint_${doc.uri.toString()}`, pseudocode);
-    window.setStatusBarMessage("$(check) Successfully converted Shadow Code!", 3000);
-  }
-}
-
-function buildDiff(oldText: string | undefined, newText: string): string {
-  // 1. Surgical Regex: Remove lines starting with context() and their trailing newline
-  // This version handles \r\n and ensures we don't leave double newlines
-  const contextRegex = /^\s*context\(.*?\)(\r?\n|$)/gm;
-  const oldTextRefined = oldText?.replace(contextRegex, "").trimEnd();
-  const newTextRefined = newText.replace(contextRegex, "").trimEnd();
-
-  // 2. Handle the "Fresh Start" case (No old text)
-  if (!oldTextRefined) {
-    return newTextRefined.split(/\r?\n/).map((line) => `+ ${line}`).join("\n");
-  }
-
-  // 3. Perform the Diff
-  const changes = diffLines(oldTextRefined, newTextRefined);
-  const output: string[] = [];
-  for (const change of changes) {
-    const prefix = change.added ? '+ ' : (change.removed ? '- ' : '');
-    const lines = change.value.split(/\r?\n/);
-    if (lines.length > 0 && lines[lines.length - 1] === "") {
-      lines.pop();
-    }
-    for (const line of lines) {
-      output.push(`${prefix}${line}`);
-    }
-  }
-  return output.join('\n');
-}
-
-async function cleanupGhostCheckpoints(context: ExtensionContext) {
-  for (const key of context.workspaceState.keys()) {
-    if (key.startsWith("shadow_checkpoint_")) {
-      const uriString = key.replace("shadow_checkpoint_", "");
-      try {
-        await workspace.fs.stat(Uri.parse(uriString));
-      } catch {
-        await context.workspaceState.update(key, undefined);
-        console.log(`Cleaned up ghost checkpoint: ${uriString}`);
-      }
-    }
-  }
+  // Register Completion Item Providers.
+  registerContextFilesCompletionItemProvider(context);
+  registerContextFuncCompletionItemProvider(context);
 }
 
 export function deactivate() {

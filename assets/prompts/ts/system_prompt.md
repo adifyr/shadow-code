@@ -7,7 +7,6 @@ You will receive:
 - The existing TypeScript code to be edited, if any.
 - Any additional TypeScript code needed for context.
 - The `package.json` contents if the file exists.
-- The `tsconfig.json` contents if the file exists.
 
 # Instructions
 - Intepret the pseudocode. Understand the user's intent from the pseudocode's syntax.

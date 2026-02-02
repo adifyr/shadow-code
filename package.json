@@ -2,7 +2,8 @@
   "name": "shadow-code-ai",
   "displayName": "Shadow Code AI",
   "description": "A novel approach to coding with AI.",
-  "version": "0.2.0",
+  "publisher": "adifyr",
+  "version": "0.3.0",
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
@@ -36,18 +37,18 @@
     },
     "commands": [
       {
-        "command": "shadowCodeAI.openInShadowMode",
+        "command": "ShadowCodeAI.openInShadowMode",
         "title": "Open In Shadow Mode",
         "icon": "$(shadow-mode)"
       },
       {
-        "command": "shadowCodeAI.copyCode",
+        "command": "ShadowCodeAI.copyCode",
         "title": "Copy Over Existing Code",
         "icon": "$(copy)"
       },
       {
-        "command": "shadowCodeAI.generateCode",
-        "title": "Generate Code",
+        "command": "ShadowCodeAI.convertShadowCode",
+        "title": "Convert To Code",
         "icon": "$(sparkle)"
       }
     ],
@@ -72,7 +73,7 @@
     ],
     "keybindings": [
       {
-        "command": "shadowCodeAI.generateCode",
+        "command": "ShadowCodeAI.convertShadowCode",
         "key": "ctrl+alt+enter",
         "mac": "cmd+alt+enter",
         "when": "resourceExtname == .shadow || editorLangId == shadow"
@@ -81,24 +82,24 @@
     "menus": {
       "editor/title": [
         {
-          "command": "shadowCodeAI.openInShadowMode",
+          "command": "ShadowCodeAI.openInShadowMode",
           "when": "resourceScheme == file && resourceExtname != .shadow",
           "group": "navigation"
         },
         {
-          "command": "shadowCodeAI.copyCode",
+          "command": "ShadowCodeAI.copyCode",
           "when": "resourceExtname == .shadow",
           "group": "navigation"
         },
         {
-          "command": "shadowCodeAI.generateCode",
+          "command": "ShadowCodeAI.convertShadowCode",
           "when": "resourceExtname == .shadow",
           "group": "navigation"
         }
       ],
       "editor/title/context": [
         {
-          "command": "shadowCodeAI.openInShadowMode",
+          "command": "ShadowCodeAI.openInShadowMode",
           "when": "resourceScheme == file && resourceExtname != .shadow",
           "group": "navigation"
         }
@@ -107,23 +108,10 @@
     "configuration": {
       "title": "Shadow Code AI",
       "properties": {
-        "shadowCodeAI.apiKey": {
-          "type": "string",
-          "title": "Gemini API Key",
-          "default": "REMOVED",
-          "description": "Your Gemini API key.",
-          "order": 1
-        },
-        "shadowCodeAI.model": {
+        "ShadowCodeAI.modelId": {
           "type": "string",
           "title": "AI Model",
-          "default": "gemini-flash-lite-latest",
-          "enum": [
-            "gemini-flash-lite-latest",
-            "gemini-flash-latest"
-          ],
-          "description": "The AI model to use for code generation.",
-          "order": 2
+          "description": "The AI model to use for code generation."
         }
       }
     }
@@ -143,6 +131,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
     "@types/vscode": "^1.108.0",
@@ -157,6 +146,7 @@
   "dependencies": {
     "@google/genai": "^1.38.0",
     "@openrouter/sdk": "^0.4.0",
-    "diff": "^8.0.3"
+    "diff": "^8.0.3",
+    "js-yaml": "^4.1.1"
   }
 }
