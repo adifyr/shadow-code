@@ -47,7 +47,7 @@ Once you're done writing your "shadow" code, there's 2 ways you can convert it t
 The first time you trigger this command, you may be asked to choose an AI model to generate the code. Go ahead and select your preferred model.
 
 > [!IMPORTANT]
->Shadow Code integrates with VS Code's native language models. As such, a model provider (such as Github Copilot) is required for Shadow Code to work.
+> Shadow Code integrates with VS Code's native language models. As such, a model provider (such as Github Copilot) is required for Shadow Code to work.
 
 Shadow Code will generate the target code in your original code file:
 
@@ -55,7 +55,7 @@ https://github.com/user-attachments/assets/f654a0f9-d216-4ccf-ac7b-d3024cf4b636
 
 _The above code was generated using Gemini 2.5 Flash._
 
-> [!WARNING] Alert
+> [!WARNING]
 > If you experience an error along the lines of `Failed To Stream AI Response: Response got filtered`, you need to go into your [Copilot settings on the GitHub website](https://github.com/settings/copilot/features) and - under Privacy - set **"Suggestions matching public code"** to **Allowed**.
 > 
 > This is assuming you have GitHub Copilot as your model provider in VS Code.
@@ -109,7 +109,7 @@ context("lib/models/user.dart", "lib/screens/home.dart")
 
 By picking exactly what the model sees, you stop it from guessing or hallucinating based on unrelated files. It keeps the output sharp and doesn't waste tokens on code that doesn't matter.
 
-> [!NOTE]
+> [!TIP]
 > Shadow Code automatically picks up your `pubspec.yaml` (Dart) or `package.json` (JS/TS) config file to know what libraries you're using. So, no need to include them in your context function.
 
 ## Automatically Installs Dependencies
