@@ -3,7 +3,7 @@
   "displayName": "Shadow Code",
   "description": "A novel approach to coding with AI.",
   "publisher": "adifyr",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
@@ -38,7 +38,7 @@
     "commands": [
       {
         "command": "ShadowCode.openInShadowMode",
-        "title": "Shadow Code: Open In Shadow Mode",
+        "title": "Open In Shadow Mode",
         "icon": "$(shadow-mode)"
       },
       {
@@ -81,7 +81,13 @@
         "command": "ShadowCode.convertShadowCode",
         "key": "ctrl+alt+enter",
         "mac": "cmd+alt+enter",
-        "when": "resourceExtname == .shadow || editorLangId == shadow"
+        "when": "resourceScheme == file && resourceExtname == .shadow"
+      },
+      {
+        "command": "ShadowCode.openInShadowMode",
+        "key": "ctrl+alt+s",
+        "mac": "cmd+ctrl+s",
+        "when": "resourceScheme == file && editorTextFocus && resourceExtname != .shadow"
       }
     ],
     "menus": {
