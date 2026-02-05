@@ -1,3 +1,7 @@
+<p align="center"><img width="710" height="156" alt="shadow_code_logo" src="https://github.com/user-attachments/assets/4b379b0b-c711-4735-a9bd-9a8230979da3" /></p>
+
+<br/>
+
 # About Shadow Code
 
 Shadow Coding<sup>TM</sup> is an AI coding technique that involves transforming human-written pseudocode to clean, accurate & production-ready code in the target language. _(At least, that's what I've told the AI to do in the system prompt.)_
