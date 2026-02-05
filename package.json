@@ -2,8 +2,9 @@
   "name": "shadow-code-ai",
   "displayName": "Shadow Code AI",
   "description": "A novel approach to coding with AI.",
+  "icon": "assets/icon.png",
   "publisher": "adifyr",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
