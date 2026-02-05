@@ -13,12 +13,10 @@ Most importantly, Shadow Coding puts developers back in the driver's seat. With 
 
 **But, that's not all. Check out the [Features](#features) section below to know more.**
 
----
 # Installation
 
 Shadow Code is currently available as a free & open-source VS Code Extension. Go ahead and install it from the Extensions Marketplace.
 
----
 # Instructions
 
 ## 1. Open Shadow Mode
@@ -63,7 +61,6 @@ _The above code was generated using Gemini 2.5 Flash._
 > This is assuming you have GitHub Copilot as your model provider in VS Code.
 ## 4. Profit :moneybag:
 
----
 # Features
 
 ## Extends Language Syntax
@@ -119,8 +116,6 @@ By picking exactly what the model sees, you stop it from guessing or hallucinati
 
 If the generated code makes use of dependencies that haven't been installed yet, Shadow Code goes the extra mile and installs those dependencies for you automatically. :slightly_smiling_face:
 
----
-
 # Performance
 
 | Category        | Usage                                                                |
@@ -129,13 +124,9 @@ If the generated code makes use of dependencies that haven't been installed yet,
 | Output Tokens   | As big as your output code in the file. _300-600 tokens on average._ |
 | Generation Time | Depends on the model. _1-3 seconds on average._                      |
 
----
-
 # Contribution Guide
 
 Technically, Shadow Code supports any language via its `DefaultHandler`, but dedicated support currently exists for only Dart, JavaScript & TypeScript - along with `jsx/tsx` files. We'd appreciate all the help we can get in expanding our support to more languages. Please have a look at `CONTRIBUTING.md` if you would like to contribute.
-
----
 
 # Roadmap
 
