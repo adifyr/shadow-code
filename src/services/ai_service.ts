@@ -1,17 +1,15 @@
 import {readFileSync} from "fs";
 import {join} from "path";
-import {CancellationTokenSource, ConfigurationTarget, LanguageModelChat, LanguageModelChatMessage, lm, Position, Range, Uri, ViewColumn, window, workspace, WorkspaceConfiguration} from "vscode";
+import {CancellationTokenSource, ConfigurationTarget, env, LanguageModelChat, LanguageModelChatMessage, lm, Position, Range, Uri, ViewColumn, window, workspace, WorkspaceConfiguration} from "vscode";
 import {buildDiff} from "../utils/diff_builder";
 import {Logger} from "../utils/logger";
 import {getLanguageHandler} from "./handler_interface";
 
 export class AIService {
   private config: WorkspaceConfiguration;
-  private modelId: string | undefined;
 
   constructor(private extensionPath: string) {
     this.config = workspace.getConfiguration("ShadowCode");
-    this.modelId = this.config.get<string>("modelId");
   }
 
   async convertShadowCode(
@@ -38,7 +36,7 @@ export class AIService {
   }
 
   private async generateCode(systemPrompt: string, userPrompt: string, fileUri: Uri): Promise<string | undefined> {
-    const model = await this.selectModel(this.modelId);
+    const model = await this.selectModel(this.config.get<string>("modelId"));
     if (!model) {return;}
     const cancellationSource = new CancellationTokenSource();
     const response = await model.sendRequest([
@@ -67,8 +65,23 @@ export class AIService {
       }
     } catch (err) {
       const error = err as Error;
-      Logger.error(`Error editing fragments: ${error.message}`, error.stack);
-      await originalFileEditor.edit((edit) => edit.insert(originalFileEditor.selection.active, `// ${error.message}`));
+      if (error.message.includes("filtered")) {
+        window.showErrorMessage(
+          "Shadow Code: AI Response has been blocked by Github's 'Public Code' filter. Go to your Copilot settings on the GitHub website and set 'Suggestions matching public code' (under Privacy) to 'Allowed'.",
+          "Go To Copilot Settings On Github",
+        ).then((value) => {
+          if (value === "Go To Copilot Settings On Github") {
+            env.openExternal(Uri.parse("https://github.com/settings/copilot/features"));
+          }
+        });
+      }
+      Logger.error(`Error Streaming AI Response: ${error.message} | Using Model: ${model.name}`, error.stack);
+      await originalFileEditor.edit((edit) => {
+        const doc = originalFileEditor.document;
+        edit.delete(new Range(doc.positionAt(0), doc.positionAt(doc.getText().length)));
+        edit.insert(originalFileEditor.selection.active, `// ${error.message}`);
+      });
+      cancellationSource.dispose();
       return;
     } finally {
       cancellationSource.dispose();

@@ -12,8 +12,8 @@ export interface ILanguageHandler {
 export function getLanguageHandler(langExtName: string): ILanguageHandler {
   switch (langExtName) {
     case "dart": return new DartHandler();
-    case "js": return new JavaScriptHandler();
-    case "ts": return new TypeScriptHandler();
+    case "js": case "jsx": return new JavaScriptHandler();
+    case "ts": case "tsx": return new TypeScriptHandler();
     default: return new DefaultHandler();
   }
 }

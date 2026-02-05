@@ -17,6 +17,9 @@ You will receive:
 - Follow the latest best-practices and conventions for the Dart programming language.
 - Use proper syntax and formatting.
 - Include the necessary imports.
+
+## Style Guide For Dart
+
 - Use `const` for fields and constructors where appropriate.
 - Use `final` for immutable fields.
 - Always use relative imports.
@@ -28,10 +31,10 @@ You will receive:
 - Prefer using the ternary operator if the pseudocode also uses a ternary operator.
 - Prefer `Navigator.push(context, ...)` or `Navigator.pushNamed(context, ...)` directly instead of `Navigator.of(context)...`
 
-## How To Handle Data Class Pseudocode
+### How To Handle Data Class Pseudocode
 Data Classes are not a feature in the Dart programming language. If "data class" is mentioned in the pseudocode, convert it to a "final class" like below:
 
-### Example 1
+#### Example 1
 
 **Pseudocode:**
 ```
@@ -114,7 +117,7 @@ final class User {
 }
 ```
 
-### Example 2:
+#### Example 2:
 If the pseudocode implies the use of a "firestore class", convert it to a final class like below:
 
 **Pseudocode:**
@@ -168,8 +171,8 @@ final class Payment {
       'to_user': toUser,
       'description': description,
       'amount': amount,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
+      'created_at': createdAt, // does not need to be converted back to a Timestamp.
+      'updated_at': updatedAt, // does not need to be converted back to a Timestamp.
     };
   }
 
@@ -182,7 +185,7 @@ final class Payment {
     DateTime? updatedAt,
   }) {
     return Payment(
-      id: id,
+      id: id, // firestore ids should not be editable.
       fromUser: fromUser ?? this.fromUser,
       toUser: toUser ?? this.toUser,
       description: description ?? this.description,
@@ -197,80 +200,6 @@ final class Payment {
 - Import `foundation.dart` and annotate the classes as immutable.
 - `Timestamp` is a firestore type. So, be sure to import firestore.
 - For the "firestore class", exclude "id" from the toJson() method. It is not part of the document data.
-
-## How To Write Riverpod Providers
-When integrating with Firebase, use `StreamProvider` and `FutureProvider` as follows:
-
-- Use an `async*` function inside a `StreamProvider` and `async` inside a `FutureProvider`.
-- Prefer having a `getRef()` function that returns the firestore reference for the document or collection to be queried. The name of the functions must include the type of the data you're fetching. For example: `getUserRef()`, `getMessagesRef()` (Plural name if collection).
-- The firestore path must include a `withConverter()` function.
-- Inside the provider function, read the snapshot derived from `getRef()` using `yield*`.
-- When reading from other providers, prefer using `await ref.watch(providerName.future);`.
-- Use parent `getRef()` functions in child `getRef()` functions for accessing nested documents and collections.
-
-### Example 1
-
-**Pseudocode:**
-```
-authProvider = streamprovider(authStatechanges)
-
-userProvider = streamprovider(() {
-  user = await ref.authProvider
-  yield getUserRef(user.uid)
-})
-
-messageProvider = streamProvider(() {
-  user = await ref.userProvider
-  yield getMessagesRef(user.uid)
-})
-
-getUserRef<AppUser>(uid) {
-  doc('users/uid')
-}
-
-getMessagesRef<ChatMessage>(uid) {
-  getUserRef.collection('messages')
-}
-```
-
-**Output Code:**
-```dart
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../models/user.dart';
-import '../models/message.dart';
-
-final authProvider = StreamProvider<User?>((_) => FirebaseAuth.instance.authStateChanges());
-
-final userProvider = StreamProvider<AppUser>((ref) async* {
-  final user = await ref.watch(authProvider.future);
-  if (user != null) yield* getUserRef(user.uid).snapshots().map((snapshot) => snapshot.data()!);
-});
-
-final messagesProvider = StreamProvider<List<ChatMessage>>((ref) async* {
-  // Only gets messages if an AppUser (document) exists.
-  final user = await ref.watch(userProvider.future);
-  yield* getMessagesRef(user.id).snapshots().map((snap) => snap.docs.map((doc) => doc.data()).toList());
-});
-
-DocumentReference<AppUser> getUserRef(String uid) {
-  final ref = FirebaseFirestore.instance.doc('users/$uid');
-  return ref.withConverter<AppUser>(
-    fromFirestore: (doc, _) => AppUser.fromJson(doc.id, doc.data()!),
-    toFirestore: (user, _) => user.toJson(),
-  );
-}
-
-CollectionReference<ChatMessage> getChatMessagesRef(String uid) {
-  final ref = getUsersRef().collection('messages');
-  return ref.withConverter<ChatMessage>(
-    fromFirestore: (doc, _) => ChatMessage.fromJson(doc.id, doc.data()!),
-    toFirestore: (message, _) => message.toJson(),
-  );
-}
-```
 
 # Output
 - DO NOT output any explanation.

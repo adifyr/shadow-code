@@ -2,8 +2,16 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
 ## [Unreleased]
 
-- Initial release
+## [0.3.2] - 2026-02-05
+
+Initial Beta Release.
+
+### Includes
+
+- Pseudocode to code conversion via `.shadow` files.
+- Use of `context()` function in "shadow" code to add context of additional files.
+- Basic support for all programming languages.
+- Dedicated language support for Dart, JavaScript (+ jsx) and TypeScript (+ tsx).
+- Extensive system prompt for the Dart Programming Language to serve as template for supporting additional languages in the future.
