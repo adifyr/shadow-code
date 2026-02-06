@@ -128,9 +128,9 @@ If the generated code makes use of dependencies that haven't been installed yet,
 | Output Tokens   | As big as your output code. _600-1000 tokens on average._   |
 | Generation Time | Depends on the model. _1-3 seconds on average._             |
 
-# Contribution Guide
+# Contributions
 
-Technically, Shadow Code supports any language via its `DefaultHandler`, but dedicated support currently exists for only Dart, JavaScript & TypeScript - along with `jsx/tsx` files. We'd appreciate all the help we can get in expanding our support to more languages. Please have a look at `CONTRIBUTING.md` if you would like to contribute.
+Technically, Shadow Code supports any language via its `DefaultHandler`, but dedicated support currently exists for only Dart, JavaScript & TypeScript - along with `jsx/tsx` files. We'd appreciate all the help we can get in expanding our support to more languages. Please have a look at our [Contributing Guide](https://github.com/adifyr/shadow-code/blob/main/CONTRIBUTING.md) if you would like to contribute.
 
 # Roadmap
 
@@ -140,3 +140,7 @@ Technically, Shadow Code supports any language via its `DefaultHandler`, but ded
 | **Inline Modifications** | Modify code at a specific place without creating a new file. | 🏗️ In Progress            |
 | **Python Support**       | Add dedicated prompt and dependency addition for Python.     | 🕓 Planning Phase         |
 | **Java Support**         | Add dedicated prompt and dependency addition for Java        | _Accepting Contributions_ |
+
+---
+
+### **Made with ❤️ and ☕ for Developers, by Developers**
