@@ -35,7 +35,8 @@ https://github.com/user-attachments/assets/7257c5e1-c229-4a35-b05d-a5cebfb0ff0e
 
 Shadow Mode opens up a parallel tab in your editor in split-view where you enter your pseudocode. You'll notice that it also creates a `.shadow` file as well. These "shadow" files live inside a `.shadow/` folder at the root of your workspace - within a path that mirrors the location of your original code file.
 
-If you're in a shared workspace, you should ideally include the `.shadow/` folder in your `.gitignore`. This will ensure your shadow files don't mess with those of your collaborators.
+> [!NOTE]
+> If you're in a shared workspace, you should ideally include the `.shadow/` folder in your `.gitignore`. This will ensure your shadow files don't mess with those of your collaborators.
 
 ## 2. Write Your "Shadow" Code
 
