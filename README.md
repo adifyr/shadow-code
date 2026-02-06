@@ -45,7 +45,7 @@ In the `.shadow` file, You are now free to write pseudocode as you see fit. Forg
 
 Once you're done writing your "shadow" code, there's 2 ways you can convert it to your target code:
 
-1. Click on the sparkles :sparkles: icon at the end of the editor tabs line, in the top-right corner.
+1. Click on the sparkles ✨ icon at the end of the editor tabs line, in the top-right corner.
 2. Press Ctrl+Alt+Enter (Windows) or Cmd+Opt+Enter (Mac) with your shadow file active in the editor.
 
 The first time you trigger this command, you may be asked to choose an AI model to generate the code. Go ahead and select your preferred model.
@@ -61,9 +61,10 @@ _The above code was generated using Gemini 2.5 Flash._
 
 > [!WARNING]
 > If you experience an error along the lines of `Failed To Stream AI Response: Response got filtered`, you need to go into your [Copilot settings on the GitHub website](https://github.com/settings/copilot/features) and - under Privacy - set **"Suggestions matching public code"** to **Allowed**.
-> 
+>
 > This is assuming you have GitHub Copilot as your model provider in VS Code.
-## 4. Profit :moneybag:
+
+## 4. Profit
 
 # Features
 
@@ -73,7 +74,7 @@ If you think about it, Shadow Coding is essentially interpreting one syntax and 
 
 A good case-study for this is data classes in [Dart](https://dart.dev). Dart, the programming language powering [Flutter](https://flutter.dev/), very famously lacks data classes. And though [the feature has been heavily requested since 2017](https://github.com/dart-lang/language/issues/314), there hasn't been much progress made on that front.
 
-**Shadow Coding to the rescue! :tada:**
+**Shadow Coding to the rescue! 🎉**
 
 In this case, we can prompt the AI model to treat our shadow code in a certain way. Here's an example of such a "shadow syntax" that instructs the AI model to generate a Dart class that serves as an ORM for Firestore:
 
@@ -106,7 +107,7 @@ The only dedicated syntax in a shadow file is the `context()` function. This is 
 The `context()` method goes at the top of your shadow file:
 
 ```javascript
-context("lib/models/user.dart", "lib/screens/home.dart")
+context("lib/models/user.dart", "lib/screens/home.dart");
 
 // Your pseudocode goes here...
 ```
@@ -118,15 +119,15 @@ By picking exactly what the model sees, you stop it from guessing or hallucinati
 
 ## Automatically Installs Dependencies
 
-If the generated code makes use of dependencies that haven't been installed yet, Shadow Code goes the extra mile and installs those dependencies for you automatically. :slightly_smiling_face:
+If the generated code makes use of dependencies that haven't been installed yet, Shadow Code goes the extra mile and installs those dependencies for you automatically. 🙂
 
 # Performance
 
-| Category        | Usage                                                                |
-| --------------- | -------------------------------------------------------------------- |
-| Input Tokens    | 4k-6k tokens on average. _8k-10k tokens on the upper end._           |
-| Output Tokens   | As big as your output code in the file. _300-600 tokens on average._ |
-| Generation Time | Depends on the model. _1-3 seconds on average._                      |
+| Category        | Usage                                                       |
+| --------------- | ----------------------------------------------------------- |
+| Input Tokens    | 5k-8k tokens on average. _10k-12k tokens on the upper end._ |
+| Output Tokens   | As big as your output code. _600-1000 tokens on average._   |
+| Generation Time | Depends on the model. _1-3 seconds on average._             |
 
 # Contribution Guide
 
@@ -134,13 +135,9 @@ Technically, Shadow Code supports any language via its `DefaultHandler`, but ded
 
 # Roadmap
 
-| **Feature / Language**   | **Status**                          |
-| ------------------------ | ----------------------------------- |
-| **Inline Insertions**    | :building_construction: In Progress |
-| **Inline Modifications** | :test_tube: Researching             |
-| **Python Support**       | :clock4: Planning Phase             |
-| **Go Support**           | _Accepting Contributions_           |
-| **Rust Support**         | _Accepting Contributions_           |
-| **Java Support**         | _Accepting Contributions_           |
-| **C# Support**           | _Accepting Contributions_           |
-| **Kotlin Support**       | _Accepting Contributions_           |
+| **Feature / Language**   | **Goal**                                                     | **Status**                |
+| ------------------------ | ------------------------------------------------------------ | ------------------------- |
+| **Inline Insertions**    | Insert code at a specific place without creating a new file. | 🏗️ In Progress            |
+| **Inline Modifications** | Modify code at a specific place without creating a new file. | 🏗️ In Progress            |
+| **Python Support**       | Add dedicated prompt and dependency addition for Python.     | 🕓 Planning Phase         |
+| **Java Support**         | Add dedicated prompt and dependency addition for Java        | _Accepting Contributions_ |
