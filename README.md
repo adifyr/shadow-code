@@ -64,7 +64,7 @@ _The above code was generated using Gemini 2.5 Flash._
 >
 > This is assuming you have GitHub Copilot as your model provider in VS Code.
 
-## 4. Profit
+## 4. Profit 💰
 
 # Features
 
