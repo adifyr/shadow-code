@@ -23,7 +23,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the [Shadow Code Code of Conduct](/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [adityamajethia@hotmail.com](mailto:adityamajethia@hotmail.com).
+This project and everyone participating in it is governed by the [Shadow Code - Code of Conduct](/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [adityamajethia@hotmail.com](mailto:adityamajethia@hotmail.com).
 
 ## I Have A Question
 
