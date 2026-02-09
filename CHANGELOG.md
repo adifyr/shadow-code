@@ -2,7 +2,11 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
-## [Unreleased]
+## [0.4.4] - 2026-02-09
+
+# Changed
+
+- Migrated `.shadow` file creation to the official VSCode `workspace.fs` API. Shadow Code should now work seamlessly in Remote SSH, Docker and GitHub Codespaces.
 
 ## [0.3.2] - 2026-02-05
 
