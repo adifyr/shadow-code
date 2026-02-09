@@ -1,6 +1,5 @@
 <p align="center"><img width="640" alt="shadow_code_logo" src="https://github.com/user-attachments/assets/4b379b0b-c711-4735-a9bd-9a8230979da3"/></p>
 <p align="center"><i><b><code>"Developers think in code, not paragraphs."<br/></code></b></i></p>
-<p align="center"><i><b><code>"Coding itself is a vibe."</code></b></i></p>
 
 # About Shadow Code
 
