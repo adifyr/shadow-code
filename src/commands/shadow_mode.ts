@@ -1,5 +1,3 @@
-import {existsSync, mkdirSync, writeFileSync} from "fs";
-import {basename, dirname, join} from "path";
 import {commands, ExtensionContext, Uri, ViewColumn, window, workspace} from "vscode";
 
 const COMMAND_SHADOW_MODE = "ShadowCode.openInShadowMode";
@@ -16,15 +14,15 @@ export default function registerShadowModeCommand(context: ExtensionContext) {
       window.showErrorMessage("Cannot enable Shadow Mode for a file that isn't inside a workspace folder.");
       return;
     }
-    const shadowDir = join(workspaceFolder.uri.fsPath, ".shadows", dirname(workspace.asRelativePath(fileUri)));
-    const shadowFilePath = join(shadowDir, basename(fileUri.fsPath) + ".shadow");
-    mkdirSync(shadowDir, {recursive: true});
-    if (!existsSync(shadowFilePath)) {
+    const shadowFileUri = Uri.joinPath(workspaceFolder.uri, ".shadows", workspace.asRelativePath(fileUri) + ".shadow");
+    await workspace.fs.createDirectory(Uri.joinPath(shadowFileUri, ".."));
+    try {
+      await workspace.fs.stat(shadowFileUri);
+    } catch {
       const originalFileCode = (await workspace.openTextDocument(fileUri)).getText();
-      writeFileSync(shadowFilePath, originalFileCode);
-      await context.workspaceState.update(`shadow_checkpoint_${Uri.file(shadowFilePath)}`, originalFileCode);
+      await workspace.fs.writeFile(shadowFileUri, new TextEncoder().encode(originalFileCode));
+      await context.workspaceState.update(`shadow_checkpoint_${shadowFileUri.toString()}`, originalFileCode);
     }
-    const doc = await workspace.openTextDocument(shadowFilePath);
-    window.showTextDocument(doc, {viewColumn: ViewColumn.Beside});
+    window.showTextDocument(shadowFileUri, {viewColumn: ViewColumn.Beside});
   }));
 }

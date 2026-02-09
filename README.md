@@ -33,10 +33,10 @@ There are 3 ways to open Shadow Mode:
 
 https://github.com/user-attachments/assets/7257c5e1-c229-4a35-b05d-a5cebfb0ff0e
 
-Shadow Mode opens up a parallel tab in your editor in split-view where you enter your pseudocode. You'll notice that it also creates a `.shadow` file as well. These "shadow" files live inside a `.shadow/` folder at the root of your workspace - within a path that mirrors the location of your original code file.
+Shadow Mode opens up a parallel tab in your editor in split-view where you enter your pseudocode. You'll notice that it also creates a `.shadow` file as well. These "shadow" files live inside a `.shadows/` folder at the root of your workspace - within a path that mirrors the location of your original code file.
 
 > [!NOTE]
-> If you're in a shared workspace, you should ideally include the `.shadow/` folder in your `.gitignore`. This will ensure your shadow files don't mess with those of your collaborators.
+> If you're in a shared workspace, you should ideally include the `.shadows/` folder in your `.gitignore`. This will ensure your shadow files don't mess with those of your collaborators.
 
 ## 2. Write Your "Shadow" Code
 
@@ -52,7 +52,7 @@ Once you're done writing your "shadow" code, there's 2 ways you can convert it t
 The first time you trigger this command, you may be asked to choose an AI model to generate the code. Go ahead and select your preferred model.
 
 > [!IMPORTANT]
-> Shadow Code integrates with VS Code's native language models. As such, a model provider (such as Github Copilot) is required for Shadow Code to work.
+> Shadow Code integrates with VS Code's native Language Models API. As such, a model provider (such as Github Copilot) is required for Shadow Code to work.
 
 Shadow Code will generate the target code in your original code file:
 
@@ -95,7 +95,7 @@ Here's what the AI generates:
 
 https://github.com/user-attachments/assets/db65e0a7-a6e8-406d-8225-0a89f3df7dda
 
-_The above code was generated using Gemini 2.5 Flash._
+_The above code was generated using Open AI's GPT-OSS 20B Model._
 
 Did you notice something? The AI didn't just generate something "close" to what we wanted - it generated EXACTLY the code we wanted. With shadow coding, you will find that your output code is often **more consistent and deterministic than what vibe coding would have given you.**
 
