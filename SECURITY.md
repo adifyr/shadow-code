@@ -9,4 +9,4 @@
 
 ## Reporting a Vulnerability
 
-You can report security vulnerabilities to [adityamajethia@hotmail.com](mailto:adityamajethia@hotmail.com).
+You can report security vulnerabilities to [shadowstuffai@outlook.com](mailto:shadowstuffai@outlook.com).
