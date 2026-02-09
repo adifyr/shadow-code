@@ -23,7 +23,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the [Shadow Code - Code of Conduct](/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [adityamajethia@hotmail.com](mailto:adityamajethia@hotmail.com).
+This project and everyone participating in it is governed by the [Shadow Code - Code of Conduct](/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [shadowstuffai@outlook.com](mailto:shadowstuffai@outlook.com).
 
 ## I Have A Question
 
@@ -63,7 +63,7 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 #### How Do I Submit a Good Bug Report?
 
 > [!WARNING]
-> You must never report security related issues, vulnerabilities or bugs including sensitive information to the issue tracker, or elsewhere in public. Instead sensitive bugs must be sent by email to [aditya.majethia@hotmail.com](mailto:adityamajethia@hotmail.com).
+> You must never report security related issues, vulnerabilities or bugs including sensitive information to the issue tracker, or elsewhere in public. Instead sensitive bugs must be sent by email to [aditya.majethia@hotmail.com](mailto:shadowstuffai@outlook.com).
 
 We use GitHub issues to track bugs and errors. If you run into an issue with the project:
 
