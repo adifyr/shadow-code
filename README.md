@@ -124,8 +124,8 @@ If the generated code makes use of dependencies that haven't been installed yet,
 | Category        | Usage                                                       |
 | --------------- | ----------------------------------------------------------- |
 | Input Tokens    | 5k-8k tokens on average. _10k-12k tokens on the upper end._ |
-| Output Tokens   | As big as your output code. _600-1000 tokens on average._   |
-| Generation Time | Depends on the model. _1-3 seconds on average._             |
+| Output Tokens   | As big as your output code. _800-2000 tokens on average._   |
+| Generation Time | Depends on the model. _~10 seconds on average._             |
 
 # Contributions
 
