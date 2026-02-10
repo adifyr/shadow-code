@@ -6,7 +6,7 @@ All notable changes to the "shadow-code" extension will be documented in this fi
 
 ### Changed
 
-Changed `context()` to `import()` for better syntax familiarity.
+- Changed `context()` to `import()` for better syntax familiarity.
 
 ## [0.4.4] - 2026-02-09
 
