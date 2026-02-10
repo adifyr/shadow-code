@@ -1,13 +1,13 @@
 import {extname} from "path";
 import {CompletionItem, CompletionItemKind, ExtensionContext, languages, workspace} from "vscode";
 
-export default function registerContextFilesCompletionItemProvider(context: ExtensionContext) {
+export default function registerImportFilesCompletionItemProvider(context: ExtensionContext) {
   context.subscriptions.push(languages.registerCompletionItemProvider({language: "shadow", pattern: "**/*.shadow"}, {
     async provideCompletionItems(document, position) {
       const lineText = document.lineAt(position.line).text;
       const textBeforeCursor = lineText.substring(0, position.character);
       const quoteCount = (textBeforeCursor.match(/"/g) || []).length;
-      if (!/context\([^)]*$/.test(textBeforeCursor) || quoteCount % 2 === 0) {
+      if (!/import\([^)]*$/.test(textBeforeCursor) || quoteCount % 2 === 0) {
         return;
       }
       const extName = extname(document.uri.fsPath.replace(/\.shadow$/, "")).slice(1);

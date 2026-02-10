@@ -2,6 +2,12 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [0.5.0] - 2026-02-10
+
+### Changed
+
+Changed `context()` to `import()` for better syntax familiarity.
+
 ## [0.4.4] - 2026-02-09
 
 ### Changed

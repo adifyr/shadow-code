@@ -100,12 +100,12 @@ Did you notice something? The AI didn't just generate something "close" to what 
 
 ## Accepts Selective Context
 
-The only dedicated syntax in a shadow file is the `context()` function. This is the "import" statement of your shadow file. Unlike vibe coding, where you would be compelled to index your entire codebase and hope for the best, shadow coding lets you control exactly what code files the AI should be aware of to generate your target code.
+The only dedicated syntax in a shadow file is the `import()` function. Unlike vibe coding, where you would be compelled to index your entire codebase and hope for the best, shadow coding lets you control exactly what code files the AI should be aware of to generate your target code.
 
-The `context()` method goes at the top of your shadow file:
+The `import()` method goes at the top of your shadow file:
 
 ```javascript
-context("lib/models/user.dart", "lib/screens/home.dart");
+import("lib/models/user.dart", "lib/screens/home.dart");
 
 // Your pseudocode goes here...
 ```
@@ -113,7 +113,7 @@ context("lib/models/user.dart", "lib/screens/home.dart");
 By picking exactly what the model sees, you stop it from guessing or hallucinating based on unrelated files. It keeps the output sharp and doesn't waste tokens on code that doesn't matter.
 
 > [!TIP]
-> Shadow Code automatically picks up your `pubspec.yaml` (Dart) or `package.json` (JS/TS) config file to know what libraries you're using. So, no need to include them in your context function.
+> Shadow Code automatically picks up your `pubspec.yaml` (Dart) or `package.json` (JS/TS) config file to know what libraries you're using. So, no need to include them in your import function.
 
 ## Automatically Installs Dependencies
 

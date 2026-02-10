@@ -1,9 +1,9 @@
 import {diffLines} from "diff";
 
 export function buildDiff(oldText: string | undefined, newText: string): string {
-  const contextRegex = /^\s*context\(.*?\)(\r?\n|$)/gm;
-  const oldTextRefined = oldText?.replace(contextRegex, "").trimEnd();
-  const newTextRefined = newText.replace(contextRegex, "").trimEnd();
+  const importRegex = /^\s*import\(.*?\)(\r?\n|$)/gm;
+  const oldTextRefined = oldText?.replace(importRegex, "").trimEnd();
+  const newTextRefined = newText.replace(importRegex, "").trimEnd();
   if (!oldTextRefined) {
     return newTextRefined.split(/\r?\n/).map((line) => `+ ${line}`).join("\n");
   }
