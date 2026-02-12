@@ -2,6 +2,13 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [0.5.1] - 2026-02-12
+
+### Changed
+
+- Changed README videos to GIFs for Extension Page on VSCode.
+- Prepare release for Open VSX (Cursor)
+
 ## [0.5.0] - 2026-02-10
 
 ### Changed
