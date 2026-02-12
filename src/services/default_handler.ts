@@ -2,7 +2,7 @@ import {Uri} from "vscode";
 import {ILanguageHandler} from "./handler_interface";
 
 export default class DefaultHandler implements ILanguageHandler {
-  async buildUserPrompt(baseUserPrompt: string): Promise<{userPrompt: string; configFileUri?: Uri; config: string;}> {
+  async buildUserPrompt(baseUserPrompt: string): Promise<{userPrompt: string; configUri?: Uri; config: string;}> {
     return {userPrompt: baseUserPrompt, config: ""};
   }
 
