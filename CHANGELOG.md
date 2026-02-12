@@ -2,6 +2,12 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [0.6.0] - 2026-02-12
+
+### Added
+
+- Dedicated Rust language support with handler, system prompt, and auto-dependency installation via `cargo add`.
+- `smol-toml` dependency for Cargo.toml parsing.
 ## [0.5.1] - 2026-02-12
 
 ### Changed
