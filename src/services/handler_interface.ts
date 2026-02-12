@@ -6,7 +6,7 @@ import RustHandler from "./rs_handler";
 import TypeScriptHandler from "./ts_handler";
 
 export interface ILanguageHandler {
-  buildUserPrompt(baseUserPrompt: string): Promise<{userPrompt: string, configFileUri?: Uri, config: string}>;
+  buildUserPrompt(baseUserPrompt: string, originalFileUri?: Uri): Promise<{userPrompt: string, configFileUri?: Uri, config: string}>;
   addMissingDependencies(configFileUri: Uri, config: string, output: string): void;
 }
 
