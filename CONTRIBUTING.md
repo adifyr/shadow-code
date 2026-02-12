@@ -129,6 +129,7 @@ export function getLanguageHandler(langExtName: string): ILanguageHandler {
     case "dart": return new DartHandler();
     case "js": case "jsx": return new JavaScriptHandler();
     case "ts": case "tsx": return new TypeScriptHandler();
+    case "rs": return new RustHandler();
     default: return new DefaultHandler();
   }
 }
