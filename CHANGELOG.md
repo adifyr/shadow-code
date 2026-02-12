@@ -8,6 +8,12 @@ All notable changes to the "shadow-code" extension will be documented in this fi
 
 - Dedicated Rust language support with handler, system prompt, and auto-dependency installation via `cargo add`.
 - `smol-toml` dependency for Cargo.toml parsing.
+## [0.5.1] - 2026-02-12
+
+### Changed
+
+- Changed README videos to GIFs for Extension Page on VSCode.
+- Prepare release for Open VSX (Cursor)
 
 ## [0.5.0] - 2026-02-10
 
