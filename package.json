@@ -124,6 +124,12 @@
           "type": "string",
           "title": "AI Model",
           "description": "The AI model to use for code generation."
+        },
+        "ShadowCode.rustAutoInstallDependencies": {
+          "type": "boolean",
+          "default": true,
+          "title": "Rust: Auto-Install Dependencies",
+          "description": "Automatically run `cargo add` to install missing crate dependencies detected in generated Rust code."
         }
       }
     }

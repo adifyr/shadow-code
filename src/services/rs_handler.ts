@@ -2,7 +2,7 @@ import {execFile} from "child_process";
 import {existsSync} from "fs";
 import {parse} from "smol-toml";
 import {dirname, join} from "path";
-import {Uri, window, workspace} from "vscode";
+import {Uri, window, workspace, WorkspaceConfiguration} from "vscode";
 import {Logger} from "../utils/logger";
 import {ILanguageHandler} from "./handler_interface";
 
@@ -48,6 +48,9 @@ export default class RustHandler implements ILanguageHandler {
   }
 
   addMissingDependencies(configFileUri: Uri, config: string, output: string): void {
+    const cfg: WorkspaceConfiguration = workspace.getConfiguration("ShadowCode");
+    if (!cfg.get<boolean>("rustAutoInstallDependencies", true)) {return;}
+
     try {
       const doc = parse(config) as {
         package?: {name?: string};
