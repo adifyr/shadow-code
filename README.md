@@ -36,7 +36,7 @@ There are 3 ways to open Shadow Mode:
 2. Click on the Shadow Code Icon located at the end of the editor tabs line, in the top-right corner.
 3. Press Ctrl+Alt+S (Windows) or Cmd+Ctrl+S (Mac) with your preferred code file active in the editor.
 
-https://github.com/user-attachments/assets/7257c5e1-c229-4a35-b05d-a5cebfb0ff0e
+![shadowcode_screencapture1](https://github.com/user-attachments/assets/14fbec67-586c-4350-b338-7b3d1289af04)
 
 Shadow Mode opens up a parallel tab in your editor in split-view where you enter your pseudocode. You'll notice that it also creates a `.shadow` file as well. These "shadow" files live inside a `.shadows/` folder at the root of your workspace - within a path that mirrors the location of your original code file.
 
@@ -98,7 +98,7 @@ firestore class Payment {
 
 Here's what the AI generates:
 
-https://github.com/user-attachments/assets/db65e0a7-a6e8-406d-8225-0a89f3df7dda
+![shadowcode_screencapture3](https://github.com/user-attachments/assets/c1c6bacf-e808-4bf4-b00d-9d59fda44d74)
 
 _The above code was generated using Open AI's GPT-OSS 20B Model._
 
