@@ -114,12 +114,12 @@ The `ILanguageHandler` interface implements 2 key functionalities:
 
 ```typescript
 export interface ILanguageHandler {
-  buildUserPrompt(baseUserPrompt: string): Promise<{userPrompt: string, configFileUri?: Uri, config: string}>;
+  buildUserPrompt(baseUserPrompt: string, originalFileUri?: Uri): Promise<{userPrompt: string, configFileUri?: Uri, config: string}>;
   addMissingDependencies(configFileUri: Uri, config: string, output: string): void;
 }
 ```
 
-Your language handler must also extend the `ILanguageHandler` interface. For the logic in `addMissingDependencies(...)`, prefer to implement a deterministic, regex-based parser for the targer language. If it isn't feasible to implement a deterministic parser, you can proceed with using an AI-based approach - as long as you explain why in the PR.
+Your language handler must also extend the `ILanguageHandler` interface. For the logic in `addMissingDependencies(...)`, prefer to implement a deterministic, regex-based parser for the target language. If it isn't feasible to implement a deterministic parser, you can proceed with using an AI-based approach - as long as you explain why in the PR.
 
 Once your handler has been written, you can go ahead and add it to the `getLanguageHandler()` function inside `handler_interface.ts`:
 
