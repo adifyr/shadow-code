@@ -1,4 +1,4 @@
-# Psuedocode
+# Psuedocode:
 ```diff
 {{pseudocode}}
 ```

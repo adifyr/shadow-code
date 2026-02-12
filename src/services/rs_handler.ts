@@ -58,7 +58,7 @@ export default class RustHandler implements ILanguageHandler {
       if (required.length > 0) {
         exec(`cargo add ${required.join(" ")}`, {cwd: dirname(configFileUri.fsPath)}, (err, _, stderr) => {
           if (err) {
-            Logger.error("Failed to install Rust dependencies", err.message);
+            Logger.error("Failed to install dependencies", err.message);
             window.showErrorMessage(`Failed to install dependencies: ${stderr}`);
             return;
           }
