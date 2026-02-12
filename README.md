@@ -119,7 +119,7 @@ import("lib/models/user.dart", "lib/screens/home.dart");
 By picking exactly what the model sees, you stop it from guessing or hallucinating based on unrelated files. It keeps the output sharp and doesn't waste tokens on code that doesn't matter.
 
 > [!TIP]
-> Shadow Code automatically picks up your `pubspec.yaml` (Dart) or `package.json` (JS/TS) config file to know what libraries you're using. So, no need to include them in your import function.
+> Shadow Code automatically picks up your `pubspec.yaml` (Dart), `package.json` (JS/TS) or `Cargo.toml` (Rust) config file to know what libraries you're using. So, no need to include them in your import function.
 
 ## Automatically Installs Dependencies
 
@@ -135,7 +135,7 @@ If the generated code makes use of dependencies that haven't been installed yet,
 
 # Contributions
 
-Technically, Shadow Code supports any language via its `DefaultHandler`, but dedicated support currently exists for only Dart, JavaScript & TypeScript - along with `jsx/tsx` files. We'd appreciate all the help we can get in expanding our support to more languages. Please have a look at our [Contributing Guide](https://github.com/adifyr/shadow-code/blob/main/CONTRIBUTING.md) if you would like to contribute.
+Technically, Shadow Code supports any language via its `DefaultHandler`, but dedicated support currently exists for Dart, JavaScript & TypeScript (+ `jsx/tsx`), and Rust. We'd appreciate all the help we can get in expanding our support to more languages. Please have a look at our [Contributing Guide](https://github.com/adifyr/shadow-code/blob/main/CONTRIBUTING.md) if you would like to contribute.
 
 # Roadmap
 
