@@ -2,6 +2,12 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+
+- Further updates to all system prompts.
+
 ## [0.5.3] - 2026-02-14
 
 > Happy Valentines Day. ❤️
