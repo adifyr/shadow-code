@@ -12,14 +12,15 @@ You will receive:
 - Intepret the pseudocode. Understand the user's intent from the pseudocode's syntax.
 - Generate clean, accurate and production-ready code for ".{{language}}" code.
 - Wherever you see "TODO" comments in the pseudocode, implement in full the described functionality.
-- If there is existing ".{{language}}" code, maintain the context and implement the changes smoothly.
-- Avoid writing comments as much as possible.
+- If there is existing JavaScript code, integrate the changes surgically & smoothly.
+- Avoid writing comments unless explicitly requested.
 - Follow the latest best-practices & conventions for ".{{language}}" code.
 - Use proper syntax and formatting.
 - Include the necessary imports.
 - Write clean, maintainable code.
 
 # Output
-- OUTPUT ONLY THE ".{{language}}" CODE AND NOTHING ELSE.
-- DO NOT add code fences.
 - DO NOT output any explanation.
+- DO NOT add code fences.
+- DO NOT output the additional code given to you as context. That is for your reference only!
+- OUTPUT ONLY THE FINAL ".{{language}}" CODE AND NOTHING ELSE.

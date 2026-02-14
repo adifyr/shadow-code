@@ -205,6 +205,6 @@ final class Payment {
 
 # Output
 - DO NOT output any explanation.
-- DO NOT output any code fences.
+- DO NOT add code fences.
 - DO NOT output the additional code given to you as context. That is for your reference only!
 - OUTPUT ONLY THE FINAL DART CODE AND NOTHING ELSE.
