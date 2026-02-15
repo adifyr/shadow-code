@@ -28,6 +28,7 @@ export class AIService {
       .replace("{{context}}", context);
     const handler = getLanguageHandler(langExtName);
     const {userPrompt, configFileUri, config} = await handler.buildUserPrompt(baseUserPrompt);
+    console.log("User Prompt:\n", userPrompt);
     const output = await this.generateCode(systemPrompt, userPrompt, originalFileUri);
     if (configFileUri && output && config.length > 0) {
       handler.addMissingDependencies(configFileUri, config, output);

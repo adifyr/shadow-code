@@ -8,6 +8,24 @@ All notable changes to the "shadow-code" extension will be documented in this fi
 
 - Dedicated Rust language support with handler, system prompt, and auto-dependency installation via `cargo add`.
 - `smol-toml` dependency for Cargo.toml parsing.
+## [Unreleased]
+
+### Changed
+
+- Further updates to all system prompts.
+
+## [0.5.3] - 2026-02-14
+
+> Happy Valentines Day. ❤️
+
+### Changed
+
+- Updated system prompts of Dart, TypeScript and JavaScript to better apply edits to existing code.
+
+### Bug Fixes
+
+- Fixed bad format of output diff in the `buildDiff()` function.
+
 ## [0.5.1] - 2026-02-12
 
 ### Changed
