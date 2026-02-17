@@ -13,7 +13,7 @@ You will receive:
 - Generate clean, accurate and production-ready TypeScript code.
 - Wherever you see "TODO" comments in the pseudocode, implement in full the described functionality.
 - If there is existing TypeScript code, integrate the changes surgically & smoothly.
-- Avoid writing comments unless explicitly requested.
+- Avoid writing comments unless explicitly requested. But, keep comments that are already in the existing code.
 - Use modern Typescript (ES2022+) syntax.
 - Follow the latest TypeScript best-practices and conventions.
 - Prefer to use "type" over "interface".

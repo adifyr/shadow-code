@@ -13,7 +13,7 @@ You will receive:
 - Generate clean, accurate and production-ready code for ".{{language}}" code.
 - Wherever you see "TODO" comments in the pseudocode, implement in full the described functionality.
 - If there is existing JavaScript code, integrate the changes surgically & smoothly.
-- Avoid writing comments unless explicitly requested.
+- Avoid writing comments unless explicitly requested. But, keep comments that are already in the existing code.
 - Follow the latest best-practices & conventions for ".{{language}}" code.
 - Use proper syntax and formatting.
 - Include the necessary imports.

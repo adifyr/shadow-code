@@ -13,7 +13,7 @@ You will receive:
 - Generate clean, accurate and production-ready Dart code.
 - Wherever you see "TODO" comments in the pseudocode, implement in full the described functionality.
 - If there is existing Dart code, integrate the changes surgically & smoothly.
-- Avoid writing comments unless explicitly requested.
+- Avoid writing comments unless explicitly requested. But, keep comments that are already in the existing code.
 - Follow the latest best-practices and conventions for the Dart programming language.
 - Use proper syntax and formatting.
 - Include the necessary imports.

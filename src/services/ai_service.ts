@@ -53,7 +53,7 @@ export class AIService {
     await originalFileEditor.edit((edit) => {
       const doc = originalFileEditor.document;
       edit.delete(new Range(doc.positionAt(0), doc.positionAt(doc.getText().length)));
-    });
+    }, {undoStopBefore: true, undoStopAfter: false});
     let output = "";
     try {
       for await (const fragment of response.text) {
@@ -62,7 +62,7 @@ export class AIService {
           const lastLine = originalFileEditor.document.lineAt(originalFileEditor.document.lineCount - 1);
           const position = new Position(lastLine.lineNumber, lastLine.text.length);
           edit.insert(position, fragment);
-        });
+        }, {undoStopBefore: false, undoStopAfter: false});
       }
     } catch (err) {
       const error = err as Error;
@@ -81,7 +81,7 @@ export class AIService {
         const doc = originalFileEditor.document;
         edit.delete(new Range(doc.positionAt(0), doc.positionAt(doc.getText().length)));
         edit.insert(originalFileEditor.selection.active, `// ${error.message}`);
-      });
+      }, {undoStopBefore: false, undoStopAfter: true});
       cancellationSource.dispose();
       return;
     } finally {
@@ -91,7 +91,7 @@ export class AIService {
     await originalFileEditor.edit((edit) => {
       const doc = originalFileEditor.document;
       edit.replace(new Range(doc.positionAt(0), doc.positionAt(doc.getText().length)), output);
-    });
+    }, {undoStopBefore: false, undoStopAfter: true});
     await originalFileEditor.document.save();
     return output;
   }

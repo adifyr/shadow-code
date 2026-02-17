@@ -13,7 +13,7 @@ You will receive:
 - Generate clean, accurate and production-ready JavaScript code.
 - Wherever you see "TODO" comments in the pseudocode, implement in full the described functionality.
 - If there is existing JavaScript code, integrate the changes surgically & smoothly.
-- Avoid writing comments unless explicitly requested.
+- Avoid writing comments unless explicitly requested. But, keep comments that are already in the existing code.
 - Use modern Javascript (ES2022+) Syntax.
 - Follow the latest Javascript best-practices and conventions.
 - Use "const" for immutable variables.
