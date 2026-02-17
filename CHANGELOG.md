@@ -2,7 +2,12 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
-## [Unreleased]
+## [0.5.5] - 2026-02-17
+
+### Changed
+
+- Combined streamed edits made by AI into a single change. Now pressing "Undo" (`Ctrl + Z`) should undo the entire AI code and give you your old code back.
+- Further updated system prompts of all current languages (including "default") to retain comments in existing code.
 
 ### Changed
 
@@ -10,7 +15,7 @@ All notable changes to the "shadow-code" extension will be documented in this fi
 
 ## [0.5.3] - 2026-02-14
 
-> Happy Valentines Day. ❤️
+> Happy Valentine's Day. ❤️
 
 ### Changed
 
