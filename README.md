@@ -141,10 +141,10 @@ Technically, Shadow Code supports any language via its `DefaultHandler`, but ded
 
 | **Feature / Language**   | **Goal**                                                     | **Status**                |
 | ------------------------ | ------------------------------------------------------------ | ------------------------- |
+| **Java Support**         | Add dedicated prompt and dependency addition for Java        | ✅ User Testing 					 |
+| **Python Support**       | Add dedicated prompt and dependency addition for Python.     | 🕓 Planning Phase         |
 | **Inline Insertions**    | Insert code at a specific place without creating a new file. | 🏗️ In Progress            |
 | **Inline Modifications** | Modify code at a specific place without creating a new file. | 🏗️ In Progress            |
-| **Python Support**       | Add dedicated prompt and dependency addition for Python.     | 🕓 Planning Phase         |
-| **Java Support**         | Add dedicated prompt and dependency addition for Java        | _Accepting Contributions_ |
 
 ---
 
