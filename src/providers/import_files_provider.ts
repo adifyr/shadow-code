@@ -11,7 +11,12 @@ export default function registerImportFilesCompletionItemProvider(context: Exten
         return;
       }
       const extName = extname(document.uri.fsPath.replace(/\.shadow$/, "")).slice(1);
-      const files = await workspace.findFiles({dart: "lib/**/*", js: "src/**/*", ts: "src/**/*"}[extName] ?? "**/*");
+      const files = await workspace.findFiles({
+        dart: "lib/**/*",
+        java: "src/main/java/**/*.java",
+        js: "src/**/*",
+        ts: "src/**/*",
+      }[extName] ?? "**/*");
       const completionItems = files.map((file_uri) => {
         const relativePath = workspace.asRelativePath(file_uri);
         const item = new CompletionItem(relativePath, CompletionItemKind.File);
