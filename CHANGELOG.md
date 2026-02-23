@@ -2,6 +2,12 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [0.5.6] - 2026-02-23
+
+### Bug Fixes
+
+- Fixed bug in `AIService` where languages with 2nd class support weren't working because the prompt finder wasn't properly falling back to the `default` folder.
+
 ## [0.5.5] - 2026-02-17
 
 ### Changed
