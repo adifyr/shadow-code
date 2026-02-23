@@ -2,6 +2,15 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Added Java support:
+  * Includes prompts for pseudocode to code conversion.
+  * `import()` support for adding local Java source code files as context.
+  * Automatic Maven Central dependency lookup with user notifications.
+
 ## [0.5.6] - 2026-02-23
 
 ### Bug Fixes
