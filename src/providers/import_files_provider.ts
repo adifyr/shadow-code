@@ -15,6 +15,7 @@ export default function registerImportFilesCompletionItemProvider(context: Exten
         dart: "lib/**/*",
         java: "src/main/java/**/*.java",
         js: "src/**/*",
+        python: "src/**/*.py",
         ts: "src/**/*",
       }[extName] ?? "**/*");
       const completionItems = files.map((file_uri) => {

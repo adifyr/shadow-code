@@ -21,7 +21,7 @@ export default class DartHandler implements ILanguageHandler {
         dependencies?: Record<string, unknown>,
         dev_dependencies?: Record<string, unknown>,
       };
-      const deps = new Set<string>([
+      const dependencies = new Set<string>([
         "flutter",
         "flutter_test",
         ...(doc.name ? [doc.name] : []),
@@ -38,7 +38,7 @@ export default class DartHandler implements ILanguageHandler {
       console.log("Dart Package Imports: " + Array.from(packages).join(", "));
 
       // Install missing dependencies.
-      const required = Array.from(packages).filter((pkg) => !deps.has(pkg));
+      const required = Array.from(packages).filter((pkg) => !dependencies.has(pkg));
       console.log("Pending Required Packages: " + required.join(", "));
       if (required.length > 0) {
         exec(`flutter pub add ${required.join(" ")}`, {cwd: dirname(configFileUri.fsPath)}, (err, _, stderr) => {
