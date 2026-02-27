@@ -138,15 +138,15 @@ If the generated code makes use of dependencies that haven't been installed yet,
 Technically, Shadow Code supports any language via its `DefaultHandler`, but dedicated support currently exists for 6 languages:
 
 - Dart
-- JavaScript (+ JSX)
-- TypeScript (+ TSX)
+- JavaScript + jsx
+- TypeScript + tsx
 - Java
 - Python
 - Rust
 
 # Contributions
 
-We'd appreciate all the help we can get in expanding our support to more languages. Please have a look at our [Contributing Guide](https://github.com/adifyr/shadow-code/blob/main/CONTRIBUTING.md) if you would like to contribute.
+We'd appreciate all the help we can get in expanding our support to more languages and editors. Please have a look at our [Contributing Guide](https://github.com/adifyr/shadow-code/blob/main/CONTRIBUTING.md) if you would like to contribute.
 
 # Roadmap
 
