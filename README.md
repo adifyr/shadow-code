@@ -24,7 +24,7 @@ Most importantly, Shadow Coding puts developers back in the driver's seat. With 
 
 # Installation
 
-Shadow Code is currently available as a free & open-source VS Code Extension. Go ahead and install it from the Extensions Marketplace.
+Shadow Code is currently available as a free & open-source VS Code Extension and Cursor. Go ahead and install it from the Extensions Marketplace of either editor.
 
 # Instructions
 
@@ -133,18 +133,28 @@ If the generated code makes use of dependencies that haven't been installed yet,
 | Output Tokens   | As big as your output code. _800-2000 tokens on average._   |
 | Generation Time | Depends on the model. _~10 seconds on average._             |
 
+# Language Support
+
+Technically, Shadow Code supports any language via its `DefaultHandler`, but dedicated support currently exists for 6 languages:
+
+- Dart
+- JavaScript (+ JSX)
+- TypeScript (+ TSX)
+- Java
+- Python
+- Rust
+
 # Contributions
 
-Technically, Shadow Code supports any language via its `DefaultHandler`, but dedicated support currently exists for only Dart, JavaScript & TypeScript - along with `jsx/tsx` files. We'd appreciate all the help we can get in expanding our support to more languages. Please have a look at our [Contributing Guide](https://github.com/adifyr/shadow-code/blob/main/CONTRIBUTING.md) if you would like to contribute.
+We'd appreciate all the help we can get in expanding our support to more languages. Please have a look at our [Contributing Guide](https://github.com/adifyr/shadow-code/blob/main/CONTRIBUTING.md) if you would like to contribute.
 
 # Roadmap
 
 | **Feature / Language**   | **Goal**                                                     | **Status**                |
 | ------------------------ | ------------------------------------------------------------ | ------------------------- |
-| **Java Support**         | Add dedicated prompt and dependency addition for Java        | ✅ User Testing 					 |
-| **Python Support**       | Add dedicated prompt and dependency addition for Python.     | 🕓 Planning Phase         |
-| **Inline Insertions**    | Insert code at a specific place without creating a new file. | 🏗️ In Progress            |
-| **Inline Modifications** | Modify code at a specific place without creating a new file. | 🏗️ In Progress            |
+| **Lua Support**          | Dedicated prompt & config support for the Lua Language.      | 🏗️ In Progress            |
+| **Inline Insertions**    | Insert code at a specific place without creating a new file. | 🕐 Pending                |
+| **Inline Modifications** | Modify code at a specific place without creating a new file. | 🕐 Pending                |
 
 ---
 

@@ -2,12 +2,13 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
-## [Unreleased]
+## [0.6.0] - 2026-02-27
 
 ### Added
 
 - Added dedicated Java support.
 - Added dedicated Python support.
+- Added dedicated Rust support.
 
 ## [0.5.6] - 2026-02-23
 

@@ -97,7 +97,8 @@ export class AIService {
   }
 
   private getPrompts = (langExtname: string): string[] => ["system", "user"].map((type) => {
-    const language = ["dart", "java", "python", "ts", "js", "tsx", "jsx"].includes(langExtname) ? langExtname : "default";
+    const languages = ["dart", "java", "py", "ts", "js", "tsx", "jsx", "rs"];
+    const language = languages.includes(langExtname) ? langExtname : "default";
     const prompt = readFileSync(join(this.extensionPath, `assets/prompts/${language}/${type}_prompt.md`), "utf-8");
     return prompt.replaceAll("{{language}}", langExtname);
   });
