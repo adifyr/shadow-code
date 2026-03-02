@@ -31,6 +31,7 @@ export class AIService {
     console.log("User Prompt:\n", userPrompt);
     const output = await this.generateCode(systemPrompt, userPrompt, originalFileUri);
     if (configFileUri && output && config.length > 0) {
+      console.log("Config Found. Checking for missing dependencies...");
       handler.addMissingDependencies(configFileUri, config, output);
     }
     return output !== undefined;

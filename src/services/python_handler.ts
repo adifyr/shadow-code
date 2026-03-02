@@ -33,15 +33,13 @@ export default class PythonHandler implements ILanguageHandler {
       const projectDeps = pyproject.project?.dependencies;
       if (Array.isArray(projectDeps)) {
         for (const dep of projectDeps) {
-          const m = String(dep).match(/^[A-Za-z0-9_\-]+/);
-          if (m) {dependencies.add(m[0]);}
+          const name = this.extractPackageName(dep);
+          if (name) {dependencies.add(name);}
         }
-      } else if (projectDeps && typeof projectDeps === "object") {
-        for (const k of Object.keys(projectDeps)) {dependencies.add(k);}
       }
       const poetryDeps = pyproject.tool?.poetry?.dependencies;
       if (poetryDeps && typeof poetryDeps === "object") {
-        for (const k of Object.keys(poetryDeps)) {dependencies.add(k);}
+        for (const k of Object.keys(poetryDeps)) {dependencies.add(k.toLowerCase().replaceAll("_", "-"));}
       }
 
       // Extract imports from python source code file
@@ -59,20 +57,25 @@ export default class PythonHandler implements ILanguageHandler {
       // Check for any missing dependencies and install them
       const required = Array.from(packages).filter((pkg) => !dependencies.has(pkg));
       if (required.length > 0) {
-        const cmd = pyproject.tool?.poetry ? "poetry add" : (pyproject.tool?.uv ? "uv add" : undefined);
-        if (cmd) {
-          exec(`${cmd} ${required.join(" ")}`, {cwd: dirname(configFileUri.fsPath)}, (err, _, stderr) => {
-            if (err) {
-              Logger.error("Failed to install dependencies", stderr);
-              window.showErrorMessage(`Failed to install dependencies: ${err.message}`);
-              return;
-            }
-            window.showInformationMessage(`Shadow Code: Installed ${required.length} Missing Dependencies`);
-          });
-        }
+        console.log(`Missing Dependencies: ${required.join(", ")}`);
+        const cmd = pyproject.tool?.poetry ? "poetry add" : "uv add";
+        console.log(`Firing command: ${cmd} ${required.join(" ")}`);
+        exec(`${cmd} ${required.join(" ")}`, {cwd: dirname(configFileUri.fsPath)}, (err, _, stderr) => {
+          if (err) {
+            Logger.error("Failed to install dependencies", stderr);
+            window.showErrorMessage(`Failed to install dependencies: ${err.message}`);
+            return;
+          }
+          window.showInformationMessage(`Shadow Code: Installed ${required.length} Missing Dependencies`);
+        });
       }
     } catch (err) {
       Logger.error("Shadow Code Error: Could not parse pyproject.toml", err);
     }
+  }
+
+  private extractPackageName(dep: string): string | undefined {
+    const match = dep.match(/^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?/);
+    return match ? match[0].toLowerCase().replaceAll("_", "-") : undefined;
   }
 }

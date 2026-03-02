@@ -8,8 +8,8 @@
 {{existing_code}}
 ```
 
-# Build File (pyproject.toml, Pipfile, or requirements.txt):
-```
+# pyproject.toml File:
+```toml
 {{config}}
 ```
 
