@@ -6,7 +6,7 @@ You will receive:
 - The pseudocode as a diff. Lines prefixed with "+" are additions. Lines prefixed with "-" are removals.
 - The existing Python code to be edited, if any.
 - Any additional Python code for context.
-- The `pyproject.toml`, `Pipfile`, or `requirements.txt` file if it exists.
+- The `pyproject.toml` file if it exists.
 
 # Instructions
 - Intepret the pseudocode. Understand the user's intent from the pseudocode's syntax.
