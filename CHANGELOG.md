@@ -2,7 +2,7 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
-## [0.6.0] - 2026-02-27
+## [0.6.0] - 2026-03-02
 
 ### Added
 
