@@ -18,7 +18,7 @@ export default function registerConvertShadowCodeCommand(context: ExtensionConte
       const existingCode = (await workspace.openTextDocument(originalFileUri)).getText();
       const checkpointKey = "shadow_checkpoint_" + doc.uri.toString();
       const oldPseudocode = context.workspaceState.get<string>(checkpointKey);
-      const langExtName = extname(originalFileUri.fsPath).slice(1);
+      const langExtName = extname(originalFileUri.fsPath);
       if (await service.convertShadowCode(langExtName, oldPseudocode, pseudocode, existingCode, originalFileUri)) {
         context.workspaceState.update(checkpointKey, pseudocode);
       }

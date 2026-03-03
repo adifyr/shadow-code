@@ -1,4 +1,4 @@
-import {Uri, window, workspace} from "vscode";
+import {Uri, window} from "vscode";
 import {Logger} from "../utils/logger";
 import {ILanguageHandler} from "./handler_interface";
 
@@ -13,46 +13,19 @@ type MavenSearchResult = {
 };
 
 export default class JavaHandler implements ILanguageHandler {
-  async buildUserPrompt(baseUserPrompt: string): Promise<{userPrompt: string; configFileUri?: Uri; config: string;}> {
-    const pomUris = await workspace.findFiles("**/pom.xml");
-    const gradleUris = await workspace.findFiles("**/build.gradle");
-    const gradleKtsUris = await workspace.findFiles("**/build.gradle.kts");
+  readonly language: string = "Java";
+  readonly configOptions: string[] = ["pom.xml", "build.gradle", "build.gradle.kts"];
 
-    let config = "";
-    let configUri: Uri | undefined;
-
-    if (pomUris.length > 0) {
-      configUri = pomUris[0];
-      config = (await workspace.openTextDocument(pomUris[0])).getText();
-    } else if (gradleUris.length > 0) {
-      configUri = gradleUris[0];
-      config = (await workspace.openTextDocument(gradleUris[0])).getText();
-    } else if (gradleKtsUris.length > 0) {
-      configUri = gradleKtsUris[0];
-      config = (await workspace.openTextDocument(gradleKtsUris[0])).getText();
-    }
-
-    const userPrompt = baseUserPrompt.replace("{{config}}", config || "No build file found");
-    return {userPrompt, configFileUri: configUri, config};
-  }
-
-  addMissingDependencies(configFileUri: Uri | undefined, config: string, output: string): void {
-    if (!configFileUri || !config) {
-      return;
-    }
-
+  addMissingDependencies(configFileUri: Uri, config: string, output: string): void {
     const imports = this.extractImports(output);
     if (imports.length === 0) {
       return;
     }
-
     const existingDeps = this.extractExistingDependencies(config);
     const missing = imports.filter(imp => !existingDeps.has(imp));
-
     if (missing.length === 0) {
       return;
     }
-
     this.lookupAndNotify(missing, configFileUri);
   }
 

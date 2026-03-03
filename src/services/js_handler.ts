@@ -6,12 +6,8 @@ import {Logger} from "../utils/logger";
 import {ILanguageHandler} from "./handler_interface";
 
 export default class JavaScriptHandler implements ILanguageHandler {
-  async buildUserPrompt(baseUserPrompt: string): Promise<{userPrompt: string; configFileUri?: Uri; config: string;}> {
-    const pkgJsonUris = await workspace.findFiles("**/package.json", "**/node_modules/**");
-    const packageJson = pkgJsonUris.length > 0 ? (await workspace.openTextDocument(pkgJsonUris[0])).getText() : "";
-    const userPrompt = baseUserPrompt.replace("{{package_json}}", packageJson);
-    return {userPrompt, configFileUri: pkgJsonUris[0], config: packageJson};
-  }
+  readonly language: string = "JavaScript";
+  readonly configOptions: string[] = ["package.json"];
 
   addMissingDependencies(configFileUri: Uri, config: string, output: string): void {
     const pkg = JSON.parse(config);

@@ -14,12 +14,8 @@ type PyProject = {
 };
 
 export default class PythonHandler implements ILanguageHandler {
-  async buildUserPrompt(baseUserPrompt: string): Promise<{userPrompt: string, configFileUri?: Uri, config: string}> {
-    const pyprojectUris = await workspace.findFiles("**/pyproject.toml");
-    const config = pyprojectUris.length > 0 ? (await workspace.openTextDocument(pyprojectUris[0])).getText() : "";
-    const userPrompt = baseUserPrompt.replace("{{config}}", config);
-    return {userPrompt, configFileUri: pyprojectUris[0], config};
-  }
+  readonly language: string = "Python";
+  readonly configOptions: string[] = ["pyproject.toml"];
 
   addMissingDependencies(configFileUri: Uri, config: string, output: string): void {
     try {

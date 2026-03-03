@@ -1,17 +1,13 @@
 import {exec} from "child_process";
 import {load} from "js-yaml";
 import {dirname} from "path";
-import {Uri, window, workspace} from "vscode";
+import {Uri, window} from "vscode";
 import {Logger} from "../utils/logger";
 import {ILanguageHandler} from "./handler_interface";
 
 export default class DartHandler implements ILanguageHandler {
-  async buildUserPrompt(baseUserPrompt: string): Promise<{userPrompt: string, configFileUri?: Uri, config: string}> {
-    const pubspecUris = await workspace.findFiles("**/pubspec.yaml");
-    const pubspec = pubspecUris.length > 0 ? (await workspace.openTextDocument(pubspecUris[0])).getText() : "";
-    const userPrompt = baseUserPrompt.replace("{{pubspec}}", pubspec);
-    return {userPrompt, configFileUri: pubspecUris[0], config: pubspec};
-  }
+  readonly language = "DART";
+  readonly configOptions = ["pubspec.yaml"];
 
   addMissingDependencies(configFileUri: Uri, config: string, output: string): void {
     try {

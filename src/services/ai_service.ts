@@ -19,21 +19,41 @@ export class AIService {
     existingCode: string,
     originalFileUri: Uri,
   ): Promise<boolean> {
-    const [systemPrompt, rawUserPrompt] = this.getPrompts(langExtName);
-    const diff = buildDiff(oldPseudocode, pseudocode);
+    const handler = getLanguageHandler(langExtName);
+    const configLists = await Promise.all(handler.configOptions.map(async (option) => {
+      return {option, uris: await workspace.findFiles(`**/${option}`)};
+    }));
+    let config: {name: string, uri: Uri, data: string} | undefined;
+    for (const list of configLists) {
+      if (list.uris.length > 0) {
+        const uri = list.uris[0];
+        config = {name: list.option, uri, data: (await workspace.openTextDocument(uri)).getText()};
+        break;
+      }
+    }
+    const prefURIs = await workspace.findFiles(`.shadows/.skills/${handler.language.toUpperCase()}.md`);
+    const preferences = prefURIs.length > 0 ? (await workspace.openTextDocument(prefURIs[0])).getText() : "NA";
+    const [rawSystemPrompt, rawUserPrompt] = ["system", "user"].map((value) => {
+      return readFileSync(join(this.extensionPath, `assets/prompts/${value}_prompt.md`), "utf-8");
+    });
+    const systemPrompt = rawSystemPrompt
+      .replaceAll("{{language}}", handler.language)
+      .replaceAll("{{config}}", config?.name ?? "Config")
+      .replaceAll("{{preferences}}", preferences);
     const context = await this.extractContext(pseudocode, workspace.getWorkspaceFolder(originalFileUri)!.uri);
-    const baseUserPrompt = rawUserPrompt
-      .replace("{{pseudocode}}", diff)
+    const userPrompt = rawUserPrompt
+      .replaceAll("{{language}}", handler.language)
+      .replaceAll("{{config}}", config?.name ?? "Config")
+      .replace("{{config_data}}", config?.data ?? "NA")
+      .replace("{{pseudocode}}", buildDiff(oldPseudocode, pseudocode))
       .replace("{{existing_code}}", existingCode)
       .replace("{{context}}", context);
-    const handler = getLanguageHandler(langExtName);
-    const {userPrompt, configFileUri, config} = await handler.buildUserPrompt(baseUserPrompt);
     const output = await this.generateCode(systemPrompt, userPrompt, originalFileUri);
-    if (configFileUri && output && config.length > 0) {
+    if (config?.uri && output && config.data.length > 0) {
       console.log("Config Found. Checking for missing dependencies...");
-      handler.addMissingDependencies(configFileUri, config, output);
+      handler.addMissingDependencies(config.uri, config.data, output);
     }
-    return output !== undefined;
+    return !!output;
   }
 
   private async generateCode(systemPrompt: string, userPrompt: string, fileUri: Uri): Promise<string | undefined> {
@@ -95,13 +115,6 @@ export class AIService {
     await originalFileEditor.document.save();
     return output;
   }
-
-  private getPrompts = (langExtname: string): string[] => ["system", "user"].map((type) => {
-    const languages = ["dart", "java", "py", "ts", "js", "tsx", "jsx", "rs"];
-    const language = languages.includes(langExtname) ? langExtname : "default";
-    const prompt = readFileSync(join(this.extensionPath, `assets/prompts/${language}/${type}_prompt.md`), "utf-8");
-    return prompt.replaceAll("{{language}}", langExtname);
-  });
 
   private async extractContext(pseudocode: string, workspaceUri: Uri): Promise<string> {
     const importBlocks = [...pseudocode.matchAll(/import\s*\(([^)]+)\)/gs)];

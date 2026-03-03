@@ -6,12 +6,8 @@ import {Logger} from "../utils/logger";
 import {ILanguageHandler} from "./handler_interface";
 
 export default class RustHandler implements ILanguageHandler {
-  async buildUserPrompt(baseUserPrompt: string): Promise<{userPrompt: string; configFileUri?: Uri; config: string;}> {
-    const cargoUris = await workspace.findFiles("**/Cargo.toml");
-    const config = cargoUris.length > 0 ? (await workspace.openTextDocument(cargoUris[0])).getText() : "";
-    const userPrompt = baseUserPrompt.replace("{{config}}", config);
-    return {userPrompt, configFileUri: cargoUris[0], config};
-  }
+  readonly language: string = "Rust";
+  readonly configOptions: string[] = ["Cargo.toml"];
 
   addMissingDependencies(configFileUri: Uri, config: string, output: string): void {
     try {

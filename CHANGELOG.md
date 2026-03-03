@@ -2,6 +2,13 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+
+- Unified user and system prompt.
+- 
+
 ## [0.6.0] - 2026-03-02
 
 ### Added
