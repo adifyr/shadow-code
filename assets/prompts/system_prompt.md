@@ -18,9 +18,8 @@ You will receive:
 - Use proper syntax and formatting.
 - Always include the necessary imports.
 
-## User Preferences For {{language}}
-
-{{preferences}}
+## Custom Instructions For {{language}}
+{{instructions}}
 
 # Output
 - DO NOT output any explanation.

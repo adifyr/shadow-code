@@ -7,7 +7,8 @@ All notable changes to the "shadow-code" extension will be documented in this fi
 ### Changed
 
 - Unified user and system prompt.
-- 
+- Decoupled language instructions from base system prompt.
+- Added ability to let users add their own custom skills for the languages they code in.
 
 ## [0.6.0] - 2026-03-02
 

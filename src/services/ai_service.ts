@@ -32,14 +32,14 @@ export class AIService {
       }
     }
     const prefURIs = await workspace.findFiles(`.shadows/.skills/${handler.language.toUpperCase()}.md`);
-    const preferences = prefURIs.length > 0 ? (await workspace.openTextDocument(prefURIs[0])).getText() : "NA";
+    const instructions = prefURIs.length > 0 ? (await workspace.openTextDocument(prefURIs[0])).getText() : "NA";
     const [rawSystemPrompt, rawUserPrompt] = ["system", "user"].map((value) => {
       return readFileSync(join(this.extensionPath, `assets/prompts/${value}_prompt.md`), "utf-8");
     });
     const systemPrompt = rawSystemPrompt
       .replaceAll("{{language}}", handler.language)
       .replaceAll("{{config}}", config?.name ?? "Config")
-      .replaceAll("{{preferences}}", preferences);
+      .replaceAll("{{instructions}}", instructions);
     const context = await this.extractContext(pseudocode, workspace.getWorkspaceFolder(originalFileUri)!.uri);
     const userPrompt = rawUserPrompt
       .replaceAll("{{language}}", handler.language)
