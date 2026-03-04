@@ -44,6 +44,7 @@ export class AIService {
       .replace("{{context}}", context);
     const prefURIs = await workspace.findFiles(`.shadows/.skills/${handler.language.toUpperCase()}.md`);
     const skillsPrompt = prefURIs.length > 0 ? (await workspace.openTextDocument(prefURIs[0])).getText() : undefined;
+    Object.entries({systemPrompt, userPrompt, skillsPrompt}).forEach((p) => console.log(`${p[0]}:\n${p[1]}`));
     const output = await this.generateCode(systemPrompt, userPrompt, skillsPrompt, originalFileUri);
     if (config?.uri && output && config.data.length > 0) {
       console.log("Config Found. Checking for missing dependencies...");

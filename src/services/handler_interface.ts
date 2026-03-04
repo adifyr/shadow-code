@@ -22,6 +22,6 @@ export function getLanguageHandler(langExtName: string): ILanguageHandler {
     case ".ts": case ".tsx": return new TypeScriptHandler();
     case ".py": return new PythonHandler();
     case ".rs": return new RustHandler();
-    default: return new DefaultHandler(`"${langExtName}"`, "NA");
+    default: return new DefaultHandler(langExtName);
   }
 }
