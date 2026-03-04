@@ -23,7 +23,7 @@ export class AIService {
     const configLists = await Promise.all(handler.configOptions.map(async (option) => {
       return {option, uris: await workspace.findFiles(`**/${option}`)};
     }));
-    let config: {name: string, uri: Uri, data: string} | undefined;
+    let config: {name: string; uri: Uri; data: string} | undefined;
     for (const list of configLists) {
       if (list.uris.length > 0) {
         const uri = list.uris[0];
@@ -31,11 +31,11 @@ export class AIService {
         break;
       }
     }
-    const systemPrompt = readFileSync(join(this.extensionPath, `assets/prompts`, 'system.md'), "utf-8")
+    const systemPrompt = readFileSync(join(this.extensionPath, "assets/prompts", "system.md"), "utf-8")
       .replaceAll("{{language}}", handler.language)
       .replaceAll("{{config}}", config?.name ?? "Config");
     const context = await this.extractContext(pseudocode, workspace.getWorkspaceFolder(originalFileUri)!.uri);
-    const userPrompt = readFileSync(join(this.extensionPath, `assets/prompts`, 'user.md'), "utf-8")
+    const userPrompt = readFileSync(join(this.extensionPath, "assets/prompts", "user.md"), "utf-8")
       .replaceAll("{{language}}", handler.language)
       .replaceAll("{{config}}", config?.name ?? "Config")
       .replace("{{config_data}}", config?.data ?? "NA")
@@ -43,8 +43,8 @@ export class AIService {
       .replace("{{existing_code}}", existingCode)
       .replace("{{context}}", context);
     const prefURIs = await workspace.findFiles(`.shadows/.skills/${handler.language.toUpperCase()}.md`);
-    const skills = prefURIs.length > 0 ? (await workspace.openTextDocument(prefURIs[0])).getText() : undefined;
-    const output = await this.generateCode(systemPrompt, userPrompt, skills, originalFileUri);
+    const skillsPrompt = prefURIs.length > 0 ? (await workspace.openTextDocument(prefURIs[0])).getText() : undefined;
+    const output = await this.generateCode(systemPrompt, userPrompt, skillsPrompt, originalFileUri);
     if (config?.uri && output && config.data.length > 0) {
       console.log("Config Found. Checking for missing dependencies...");
       handler.addMissingDependencies(config.uri, config.data, output);
@@ -55,7 +55,7 @@ export class AIService {
   private async generateCode(
     systemPrompt: string,
     userPrompt: string,
-    skills: string | undefined,
+    skillsPrompt: string | undefined,
     fileUri: Uri
   ): Promise<string | undefined> {
     const model = await this.selectModel(this.config.get<string>("modelId"));
@@ -63,6 +63,7 @@ export class AIService {
     const cancellationSource = new CancellationTokenSource();
     const response = await model.sendRequest([
       LanguageModelChatMessage.User(systemPrompt),
+      ...(skillsPrompt ? [LanguageModelChatMessage.User(skillsPrompt)] : []),
       LanguageModelChatMessage.User(userPrompt),
     ], {}, cancellationSource.token);
     let originalFileEditor = window.visibleTextEditors.find((editor) => {
