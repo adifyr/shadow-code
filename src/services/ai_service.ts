@@ -31,24 +31,20 @@ export class AIService {
         break;
       }
     }
-    const prefURIs = await workspace.findFiles(`.shadows/.skills/${handler.language.toUpperCase()}.md`);
-    const instructions = prefURIs.length > 0 ? (await workspace.openTextDocument(prefURIs[0])).getText() : "NA";
-    const [rawSystemPrompt, rawUserPrompt] = ["system", "user"].map((value) => {
-      return readFileSync(join(this.extensionPath, `assets/prompts/${value}_prompt.md`), "utf-8");
-    });
-    const systemPrompt = rawSystemPrompt
+    const systemPrompt = readFileSync(join(this.extensionPath, `assets/prompts`, 'system.md'), "utf-8")
       .replaceAll("{{language}}", handler.language)
-      .replaceAll("{{config}}", config?.name ?? "Config")
-      .replaceAll("{{instructions}}", instructions);
+      .replaceAll("{{config}}", config?.name ?? "Config");
     const context = await this.extractContext(pseudocode, workspace.getWorkspaceFolder(originalFileUri)!.uri);
-    const userPrompt = rawUserPrompt
+    const userPrompt = readFileSync(join(this.extensionPath, `assets/prompts`, 'user.md'), "utf-8")
       .replaceAll("{{language}}", handler.language)
       .replaceAll("{{config}}", config?.name ?? "Config")
       .replace("{{config_data}}", config?.data ?? "NA")
       .replace("{{pseudocode}}", buildDiff(oldPseudocode, pseudocode))
       .replace("{{existing_code}}", existingCode)
       .replace("{{context}}", context);
-    const output = await this.generateCode(systemPrompt, userPrompt, originalFileUri);
+    const prefURIs = await workspace.findFiles(`.shadows/.skills/${handler.language.toUpperCase()}.md`);
+    const skills = prefURIs.length > 0 ? (await workspace.openTextDocument(prefURIs[0])).getText() : undefined;
+    const output = await this.generateCode(systemPrompt, userPrompt, skills, originalFileUri);
     if (config?.uri && output && config.data.length > 0) {
       console.log("Config Found. Checking for missing dependencies...");
       handler.addMissingDependencies(config.uri, config.data, output);
@@ -56,7 +52,12 @@ export class AIService {
     return !!output;
   }
 
-  private async generateCode(systemPrompt: string, userPrompt: string, fileUri: Uri): Promise<string | undefined> {
+  private async generateCode(
+    systemPrompt: string,
+    userPrompt: string,
+    skills: string | undefined,
+    fileUri: Uri
+  ): Promise<string | undefined> {
     const model = await this.selectModel(this.config.get<string>("modelId"));
     if (!model) {return;}
     const cancellationSource = new CancellationTokenSource();

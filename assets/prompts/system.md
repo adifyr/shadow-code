@@ -7,6 +7,7 @@ You will receive:
 - The existing {{language}} code to be edited, if any.
 - Any additional {{language}} code for context.
 - The {{config}} file, if it exists.
+- Custom skills, instructions or style guides for {{language}} - if existing.
 
 # Instructions
 - Interpret the pseudocode. Understand the user's intent from the pseudocode's syntax.
@@ -17,9 +18,6 @@ You will receive:
 - Follow the latest best practices and conventions for the {{language}} programming language.
 - Use proper syntax and formatting.
 - Always include the necessary imports.
-
-## Custom Instructions For {{language}}
-{{instructions}}
 
 # Output
 - DO NOT output any explanation.
