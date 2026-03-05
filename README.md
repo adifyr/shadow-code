@@ -141,12 +141,16 @@ Shadow Code implements a modular system for language support. All languages use 
 
 With the release of `v0.7.0`, Shadow Code gives extension users the ability to write skills for languages in their workspace. To create a language skill, all you have to do is create a `.skills/` sub-folder inside the `.shadows/` directory. Inside the `.skills/` folder create a markdown file with the filename being the name of your language in full capital-case. Example: `DART.md`, `PYTHON.md`, `GO.md`.
 
+<img width="298" height="243" alt="Screenshot 2026-03-05 at 4 43 20 PM" src="https://github.com/user-attachments/assets/f5e3b281-ebeb-4a66-83bd-db8866360bc4" /><br/>
+
 In the markdown file, you can go ahead and start writing down whatever custom instructions or skills you want Shadow Code to absorb for that specific language.
 
 ### Example `DART.md` File
 
+
 ```markdown
 # Special Instructions For Dart
+
 - Prefer using `final` over `var` for variables whose values don't change.
 - Use `const` for compile-time constants and prefer `const` constructors when possible.
 - Prefer explicit types and avoid `dynamic`; use type annotations for clarity.
@@ -155,6 +159,7 @@ In the markdown file, you can go ahead and start writing down whatever custom in
 - Follow Effective Dart naming and style: clear identifiers, lowerCamelCase for variables and methods, UpperCamelCase for types.
 
 ## Prefer Switch Expressions
+
 Prefer switch expressions over multiple if-else blocks when mapping a value to another value (for example, converting an enum to a display string or mapping error codes to messages). Switch expressions are more concise and reduce the risk of missing branches.
 
 \`\`\`dart
