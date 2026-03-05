@@ -2,13 +2,14 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
-## [Unreleased]
+## [0.7.0]
 
 ### Changed
 
-- Unified user and system prompt.
+- Single user and system prompt each for all languages.
 - Decoupled language instructions from base system prompt.
-- Added ability to let users add their own custom skills for the languages they code in.
+- Added ability to let users add their own custom skills for the languages they code in via a "skills prompt".
+- Added dedicated Go support.
 
 ## [0.6.0] - 2026-03-02
 
