@@ -135,14 +135,62 @@ If the generated code makes use of dependencies that haven't been installed yet,
 
 # Language Support
 
-Technically, Shadow Code supports any language via its `DefaultHandler`, but dedicated support currently exists for 6 languages:
+Shadow Code implements a modular system for language support. All languages use the same system and user prompt template. Shadow Code injects the name of the languages and the name of their config files. As such, Shadow Code has basic support for nearly all popular languages.
 
-- Dart
-- JavaScript + jsx
-- TypeScript + tsx
-- Java
-- Python
-- Rust
+## Extending Language Support with Skills
+
+With the release of `v0.7.0`, Shadow Code gives extension users the ability to write skills for languages in their workspace. To create a language skill, all you have to do is create a `.skills/` sub-folder inside the `.shadows/` directory. Inside the `.skills/` folder create a markdown file with the filename being the name of your language in full capital-case. Example: `DART.md`, `PYTHON.md`, `GO.md`.
+
+In the markdown file, you can go ahead and start writing down whatever custom instructions or skills you want Shadow Code to absorb for that specific language.
+
+### Example `DART.md` File
+
+```markdown
+# Special Instructions For Dart
+- Prefer using `final` over `var` for variables whose values don't change.
+- Use `const` for compile-time constants and prefer `const` constructors when possible.
+- Prefer explicit types and avoid `dynamic`; use type annotations for clarity.
+- Use `async`/`await` for asynchronous code and handle errors with try/catch instead of chaining `then`.
+- Embrace null safety: prefer non-nullable types and handle nullable values explicitly.
+- Follow Effective Dart naming and style: clear identifiers, lowerCamelCase for variables and methods, UpperCamelCase for types.
+
+## Prefer Switch Expressions
+Prefer switch expressions over multiple if-else blocks when mapping a value to another value (for example, converting an enum to a display string or mapping error codes to messages). Switch expressions are more concise and reduce the risk of missing branches.
+
+\`\`\`dart
+enum Status { pending, success, error }
+
+// DO NOT write multiple if-else blocks for mapping values.
+String statusMessageIfElse(Status status) {
+  if (status == Status.pending) {
+    return 'Pending';
+  } else if (status == Status.success) {
+    return 'Success';
+  } else if (status == Status.error) {
+    return 'Error';
+  }
+  throw ArgumentError.value(status, 'status');
+}
+
+// INSTEAD PREFER writing switch expressions.
+String statusMessageSwitch(Status status) {
+  return switch (status) {
+    Status.pending => 'Pending',
+    Status.success => 'Success',
+    Status.error => 'Error',
+  };
+}
+\`\`\`
+```
+
+## 1st-Class Languages
+
+1st-class support for a language involves the following 2 components:
+
+- The name of the config file is also known along with the language.
+- The language has its own handler that is able to automatically install missing dependencies.
+
+Currently, Shadow Code has 1st-class Support for 7 languages: JavaScript, Typescript, Java, Dart, Python, Rust and Go. We plan to expand 1st-class support for more languages as the extension evolves. This may involve breaking changes to how languages are supported as well.
 
 # Contributions
 
@@ -152,7 +200,6 @@ We'd appreciate all the help we can get in expanding our support to more languag
 
 | **Feature / Language**   | **Goal**                                                     | **Status**                |
 | ------------------------ | ------------------------------------------------------------ | ------------------------- |
-| **Lua Support**          | Dedicated prompt & config support for the Lua Language.      | 🏗️ In Progress            |
 | **Inline Insertions**    | Insert code at a specific place without creating a new file. | 🕐 Pending                |
 | **Inline Modifications** | Modify code at a specific place without creating a new file. | 🕐 Pending                |
 
