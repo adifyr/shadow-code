@@ -6,6 +6,7 @@ import JavaScriptHandler from "./js_handler";
 import PythonHandler from "./python_handler";
 import TypeScriptHandler from "./ts_handler";
 import RustHandler from "./rust_handler";
+import GoHandler from "./go_handler";
 
 export interface ILanguageHandler {
   readonly language: string;
@@ -22,6 +23,7 @@ export function getLanguageHandler(langExtName: string): ILanguageHandler {
     case ".ts": case ".tsx": return new TypeScriptHandler();
     case ".py": return new PythonHandler();
     case ".rs": return new RustHandler();
+    case ".go": return new GoHandler();
     default: return new DefaultHandler(langExtName);
   }
 }

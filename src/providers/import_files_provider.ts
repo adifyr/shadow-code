@@ -14,10 +14,13 @@ export default function registerImportFilesCompletionItemProvider(context: Exten
       const files = await workspace.findFiles({
         java: "src/main/java/**/*.java",
         dart: "lib/**/*.dart",
-        js: "src/**/*.js",
-        ts: "src/**/*.ts",
+        js: "src/**/*.{js,jsx}",
+        jsx: "src/**/*.{js,jsx}",
+        ts: "src/**/*.{ts,tsx}",
+        tsx: "src/**/*.{ts,tsx}",
         py: "src/**/*.py",
         rs: "src/**/*.rs",
+        go: "**/*.go",
       }[extName] ?? "**/*");
       const completionItems = files.map((file_uri) => {
         const relativePath = workspace.asRelativePath(file_uri);

@@ -42,7 +42,9 @@ export class AIService {
       .replace("{{pseudocode}}", buildDiff(oldPseudocode, pseudocode))
       .replace("{{existing_code}}", existingCode)
       .replace("{{context}}", context);
-    const prefURIs = await workspace.findFiles(`.shadows/.skills/${handler.language.toUpperCase()}.md`);
+    const languageSkillGlobPattern = `.shadows/.skills/${handler.language.toUpperCase()}.md`;
+    const prefURIs = await workspace.findFiles(languageSkillGlobPattern);
+    console.log(`${prefURIs.length} URIs found for glob pattern: "${languageSkillGlobPattern}"`);
     const skillsPrompt = prefURIs.length > 0 ? (await workspace.openTextDocument(prefURIs[0])).getText() : undefined;
     Object.entries({systemPrompt, userPrompt, skillsPrompt}).forEach((p) => console.log(`${p[0]}:\n${p[1]}`));
     const output = await this.generateCode(systemPrompt, userPrompt, skillsPrompt, originalFileUri);
@@ -135,7 +137,7 @@ export class AIService {
     const context = fileResults.filter((item) => item !== null).reduce((acc, item) => {
       return acc + `**${item.path}:**\n\`\`\`\n${item.content}\n\`\`\`\n\n`;
     }, "").trim();
-    return context;
+    return context.length === 0 ? context : "NA";
   }
 
   async selectModel(modelId?: string): Promise<LanguageModelChat | undefined> {
