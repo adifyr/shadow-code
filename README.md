@@ -119,7 +119,7 @@ context("src/components/chat_message.tsx", "assets/styles/message.css");
 By picking exactly what the model sees, you stop it from guessing or hallucinating based on unrelated files. It keeps the output sharp and doesn't waste tokens on code that doesn't matter.
 
 > [!TIP]
-> Shadow Code automatically picks up your `pubspec.yaml` (Dart) or `package.json` (JS/TS) config file to know what libraries you're using. So, no need to include them in your import function.
+> Shadow Code automatically picks up your `pubspec.yaml` (Dart) or `package.json` (JS/TS) config file to know what libraries you're using. So, no need to include them in your `context()` function.
 
 ## Automatically Installs Dependencies
 
