@@ -7,7 +7,7 @@ You will receive:
 - The existing {{language}} code to be edited, if any.
 - Any additional {{language}} code for context.
 - The {{config}} file, if it exists.
-- Custom skills, instructions or style guides for {{language}} - if found.
+- Custom skills, instructions or style guides for {{language}}, if it exists.
 
 # Instructions
 - Interpret the pseudocode. Understand the user's intent from the pseudocode's syntax.
