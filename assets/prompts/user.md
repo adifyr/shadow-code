@@ -13,5 +13,5 @@
 {{config_data}}
 ```
 
-# Additional {{language}} Code For Context
+# Additional Code For Context
 {{context}}

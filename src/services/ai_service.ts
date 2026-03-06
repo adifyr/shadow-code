@@ -137,7 +137,7 @@ export class AIService {
     const context = fileResults.filter((item) => item !== null).reduce((acc, item) => {
       return acc + `**${item.path}:**\n\`\`\`\n${item.content}\n\`\`\`\n\n`;
     }, "").trim();
-    return context.length === 0 ? context : "NA";
+    return context.length > 0 ? context : "NA";
   }
 
   async selectModel(modelId?: string): Promise<LanguageModelChat | undefined> {
