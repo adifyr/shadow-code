@@ -4,7 +4,7 @@
 > [!CAUTION]
 > ## Breaking Changes
 > ### Version: 0.7.2
-> Renamed the import() function to context() so as to clearly differentiate it from native import statements in the code file. We hope that this change will save you a lot of confusion & clashes.
+> Renamed the `import()` function to `context()` so as to clearly differentiate it from native import statements in the code file. We hope that this change will save you a lot of confusion & clashes.
 
 # YouTube Video
 
