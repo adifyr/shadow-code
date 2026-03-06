@@ -2,6 +2,12 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [0.7.3] - 2026-03-06
+
+### Hotfix
+
+- Fixed text-mate rules for syntax highlighting of `context()` function in shadow file.
+
 ## [0.7.2] - 2026-03-06
 
 ### Changed
