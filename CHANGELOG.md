@@ -1,15 +1,15 @@
-# Change Log
+# Changelog
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
-## [0.7.2]
+## [0.7.2] - 2026-03-06
 
 ### Changed
 
 - Renamed `import()` func to `context()` to differentiate it from regular import statements and avoid confusion/clashes.
 - Removed directory and file-type constraints from `context()` function's auto-completion provider. You can now import files that have a different extension name or are in a different parent folder than your working code file.
 
-## [0.7.0]
+## [0.7.0] - 2026-03-05
 
 ### Changed
 

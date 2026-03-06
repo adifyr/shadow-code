@@ -1,6 +1,11 @@
 <p align="center"><img width="640" alt="shadow_code_logo" src="https://github.com/user-attachments/assets/4b379b0b-c711-4735-a9bd-9a8230979da3"/></p>
 <p align="center"><i><b><code>"Developers think in code, not paragraphs."<br/></code></b></i></p>
 
+> [!CAUTION]
+> ## Breaking Changes
+> ### Version: 0.7.2
+> Renamed the import() function to context() so as to clearly differentiate it from native import statements in the code file. We hope that this change will save you a lot of confusion & clashes.
+
 # YouTube Video
 
 Click on the thumbnail below to watch the YouTube Video. Or [click here](https://youtu.be/ZoNDQYYpl7E).
