@@ -6,6 +6,7 @@ All notable changes to the "shadow-code" extension will be documented in this fi
 
 ### Hotfix
 
+- Fixed **HORRIBLE** bug where wasn't including the context files at all!
 - Fixed text-mate rules for syntax highlighting of `context()` function in shadow file.
 
 ## [0.7.2] - 2026-03-06
