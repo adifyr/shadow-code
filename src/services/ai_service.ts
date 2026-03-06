@@ -122,8 +122,8 @@ export class AIService {
   }
 
   private async extractContext(pseudocode: string, workspaceUri: Uri): Promise<string> {
-    const importBlocks = [...pseudocode.matchAll(/import\s*\(([^)]+)\)/gs)];
-    const allPaths = importBlocks.flatMap((block) => [...block[1].matchAll(/"([^"]+)"/g)].map((match) => match[1]));
+    const contextBlocks = [...pseudocode.matchAll(/context\(([^)]+)\)/gs)];
+    const allPaths = contextBlocks.flatMap((block) => [...block[1].matchAll(/"([^"]+)"/g)].map((match) => match[1]));
     const fileResults = await Promise.all(allPaths.map(async (path) => {
       try {
         const contentBuffer = await workspace.fs.readFile(Uri.joinPath(workspaceUri, path));
