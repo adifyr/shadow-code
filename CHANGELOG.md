@@ -2,6 +2,13 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+
+- Renamed `import()` func to `context()` to differentiate it from regular import statements and avoid confusion/clashes.
+- 
+
 ## [0.7.0]
 
 ### Changed
