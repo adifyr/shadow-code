@@ -110,10 +110,10 @@ The only dedicated syntax in a shadow file is the `context()` _(previously `impo
 
 The `context()` function goes at the top of your shadow file:
 
-```js
-context("lib/models/user.dart", "lib/screens/home.dart");
+```ts
+context("src/components/chat_message.tsx", "assets/styles/message.css");
 
-// Your pseudocode goes here...
+// The rest of your pseudocode here...
 ```
 
 By picking exactly what the model sees, you stop it from guessing or hallucinating based on unrelated files. It keeps the output sharp and doesn't waste tokens on code that doesn't matter.
