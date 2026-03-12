@@ -2,6 +2,12 @@
 
 All notable changes to the "shadow-code" extension will be documented in this file.
 
+## [0.7.4] - 2026-03-12
+
+### Bug Fixes
+
+- Fixed issue with the completion items in the `context()` function not showing the correct options due to a faulty `maxResults` setting. That setting has now been removed.
+
 ## [0.7.3] - 2026-03-06
 
 ### Hotfix
