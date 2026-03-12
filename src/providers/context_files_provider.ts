@@ -9,7 +9,7 @@ export default function registerContextFilesCompletionItemProvider(context: Exte
       if (!/context\([^)]*$/.test(textBeforeCursor) || quoteCount % 2 === 0) {
         return;
       }
-      const files = await workspace.findFiles("**/*", "{**/node_modules/**,**/dist/**,**/build/**,**/bin/**}", 10);
+      const files = await workspace.findFiles("**/*", "{**/node_modules/**,**/dist/**,**/build/**,**/bin/**}");
       const completionItems = files.map((uri) => {
         const relativePath = workspace.asRelativePath(uri);
         const item = new CompletionItem(relativePath, CompletionItemKind.File);
